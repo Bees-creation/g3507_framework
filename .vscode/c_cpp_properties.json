@@ -1,0 +1,25 @@
+{
+    "configurations": [
+        {
+            "name": "MSPM0G3507_Config",
+            "includePath": [
+                "C:/software/ti/mspm0_sdk_2_05_01_00/source",
+                "C:/software/ti/mspm0_sdk_2_05_01_00/source/third_party/CMSIS/Core/Include",
+                "C:/software/ti/ccs2020/ccs/tools/compiler/ti-cgt-armllvm_4.0.4.LTS/include",
+                "${workspaceFolder}",
+                "${workspaceFolder}/Debug",
+                "${workspaceFolder}/Middlewares/**",
+                "${workspaceFolder}/Users"
+            ],
+            "defines": [
+                "__MSPM0G3507__"
+            ],
+            "windowsSdkVersion": "10.0.18362.0",
+            "compilerPath": "C:/software/ti/ccs2020/ccs/tools/compiler/ti-cgt-armllvm_4.0.4.LTS/bin/tiarmclang.exe",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "windows-clang-arm"
+        }
+    ],
+    "version": 4
+}
