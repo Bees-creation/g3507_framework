@@ -1,0 +1,18 @@
+# 忽略编译生成的文件和目录
+/Debug
+/Release
+
+*.out
+*.hex
+*.bin
+*.map
+*.a
+*.lib
+
+*.o
+*.obj
+*.d
+*.dep
+*.pp
+*.rl
+*.lst
