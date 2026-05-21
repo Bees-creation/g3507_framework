@@ -3,6 +3,7 @@
 ## 项目简介
 
 本项目是TI MSPM0G3507开发板代码框架，适配立创天猛星开发板，移植自nrtos下的empty项目+FreeRTOS核心文件
+> FreeRTOS移植参考https://blog.csdn.net/m0_58759897/article/details/152089580
 
 ## vscode编辑器
 
