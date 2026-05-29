@@ -29,18 +29,45 @@ typedef struct Struct_DMA_Manage_Object {
     uint8_t Busy;
 } Struct_DMA_Manage_Object;
 
+#if defined DMA_BASE
+#define DMA DMA
+#if defined DMA_CH_0_TRIG
+#define DMA_CHANNEL_0 DMA_CH_0_TRIG
+extern Struct_DMA_Manage_Object DMA_CH0_Manage_Object;
+#endif
+#if defined DMA_CH_1_TRIG
+#define DMA_CHANNEL_1 DMA_CH_1_TRIG
+extern Struct_DMA_Manage_Object DMA_CH1_Manage_Object;
+#endif
+#if defined DMA_CH_2_TRIG
+#define DMA_CHANNEL_2 DMA_CH_2_TRIG
+extern Struct_DMA_Manage_Object DMA_CH2_Manage_Object;
+#endif
+#if defined DMA_CH_3_TRIG
+#define DMA_CHANNEL_3 DMA_CH_3_TRIG
+extern Struct_DMA_Manage_Object DMA_CH3_Manage_Object;
+#endif
+#if defined DMA_CH_4_TRIG
+#define DMA_CHANNEL_4 DMA_CH_4_TRIG
+extern Struct_DMA_Manage_Object DMA_CH4_Manage_Object;
+#endif
+#if defined DMA_CH_5_TRIG
+#define DMA_CHANNEL_5 DMA_CH_5_TRIG
+extern Struct_DMA_Manage_Object DMA_CH5_Manage_Object;
+#endif
+#if defined DMA_CH_6_TRIG
+#define DMA_CHANNEL_6 DMA_CH_6_TRIG
+extern Struct_DMA_Manage_Object DMA_CH6_Manage_Object;
+#endif
+#if defined DMA_CH_7_TRIG
+#define DMA_CHANNEL_7 DMA_CH_7_TRIG
+extern Struct_DMA_Manage_Object DMA_CH7_Manage_Object;
+#endif
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-extern Struct_DMA_Manage_Object DMA_CH0_Manage_Object;
-extern Struct_DMA_Manage_Object DMA_CH1_Manage_Object;
-extern Struct_DMA_Manage_Object DMA_CH2_Manage_Object;
-extern Struct_DMA_Manage_Object DMA_CH3_Manage_Object;
-extern Struct_DMA_Manage_Object DMA_CH4_Manage_Object;
-extern Struct_DMA_Manage_Object DMA_CH5_Manage_Object;
-extern Struct_DMA_Manage_Object DMA_CH6_Manage_Object;
-extern Struct_DMA_Manage_Object DMA_CH7_Manage_Object;
 
 /**
  * @brief DMA初始化

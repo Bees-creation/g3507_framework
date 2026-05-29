@@ -12,4 +12,4 @@
 #include "queue.h"
 #include "semphr.h"
 
-#endif
+#endif /* DRV_OS_H */

@@ -11,8 +11,7 @@
  * @param xTask 任务句柄
  * @param pcTaskName 任务名
  */
-void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
-{
+void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName) {
     for (;;);
 }
 
@@ -25,14 +24,13 @@ void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
 void vApplicationGetIdleTaskMemory(
     StaticTask_t **ppxIdleTaskTCBBuffer,
     StackType_t **ppxIdleTaskStackBuffer,
-    uint32_t *pulIdleTaskStackSize)
-{
+    uint32_t *pulIdleTaskStackSize) {
     static StaticTask_t xIdleTaskTCB;
     static StackType_t uxIdleTaskStack[configIDLE_TASK_STACK_DEPTH];
 
-    *ppxIdleTaskTCBBuffer   = &xIdleTaskTCB;
+    *ppxIdleTaskTCBBuffer = &xIdleTaskTCB;
     *ppxIdleTaskStackBuffer = uxIdleTaskStack;
-    *pulIdleTaskStackSize   = configIDLE_TASK_STACK_DEPTH;
+    *pulIdleTaskStackSize = configIDLE_TASK_STACK_DEPTH;
 }
 
 /** 
@@ -43,12 +41,11 @@ void vApplicationGetIdleTaskMemory(
  */
 void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer,
                                     StackType_t **ppxTimerTaskStackBuffer,
-                                    uint32_t *pulTimerTaskStackSize)
-{
+                                    uint32_t *pulTimerTaskStackSize) {
     static StaticTask_t xTimerTaskTCB;
     static StackType_t uxTimerTaskStack[configTIMER_TASK_STACK_DEPTH];
 
-    *ppxTimerTaskTCBBuffer   = &xTimerTaskTCB;
+    *ppxTimerTaskTCBBuffer = &xTimerTaskTCB;
     *ppxTimerTaskStackBuffer = uxTimerTaskStack;
-    *pulTimerTaskStackSize   = configTIMER_TASK_STACK_DEPTH;
+    *pulTimerTaskStackSize = configTIMER_TASK_STACK_DEPTH;
 }

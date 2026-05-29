@@ -1,14 +1,14 @@
 /**
- * @brief 调试用任务函数
+ * @brief 任务函数入口
  * @date 2026/5/15
  * @copyright https://github.com/Bees-creation (c) 2026
  */
 
-#ifndef TSK_DEBUG_H
-#define TSK_DEBUG_H
+#ifndef TSK_CONFIG_H
+#define TSK_CONFIG_H
 
-#include "ti_msp_dl_config.h"
 #include "Drivers/FreeRTOS/drv_os.h"
+#include "Drivers/BSP/drv_bsp.h"
 
 // 最大阻塞式任务数量
 #define MAX_BLOCK_TASK_NUM      10
@@ -27,9 +27,9 @@ typedef void (*Task_Function_t)(void);
  */
 typedef struct {
     Task_Function_t Task_Function;
-    uint32_t        Period;
-    TaskHandle_t    Task_Handle;
-    uint8_t         Available;
+    uint32_t Period;
+    TaskHandle_t Task_Handle;
+    uint8_t Available;
 } Struct_Periodic_Task_Manage_Object;
 
 // 阻塞式调度任务列表
@@ -44,7 +44,9 @@ static uint8_t _periodic_task_count;
  */
 inline void Error_Handler() {
     taskDISABLE_INTERRUPTS();
-    for (;;);
+    for (;;) {
+        // 错误处理
+    }
 }
 
 /**
@@ -60,7 +62,7 @@ static void Periodic_Task_Entry(void *param);
  * @brief 阻塞式任务注册函数
  * @param _func 任务函数指针
  */
-int Register_Block_Task(Task_Function_t _func);
+uint8_t Register_Block_Task(Task_Function_t _func);
 
 /**
  * @brief 并发式任务注册函数
@@ -69,7 +71,7 @@ int Register_Block_Task(Task_Function_t _func);
  * @param stack_size 任务栈空间大小
  * @param priority 任务优先级
  */
-int Register_Periodic_Task(uint32_t _period, Task_Function_t _func,
+uint8_t Register_Periodic_Task(uint32_t _period, Task_Function_t _func,
                            uint16_t stack_size, UBaseType_t priority);
 
 /**
@@ -82,4 +84,4 @@ void Task_Init(void);
  */
 void Task_Debug(void);
 
-#endif
+#endif /* TSK_CONFIG_H */

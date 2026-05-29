@@ -48,3 +48,23 @@
 | DEBUGSS | PA20 | Debug Clock |
 | DEBUGSS | PA19 | Debug Data In Out |
 | GPIO | PB22 | 板载LED |
+| UART0 TX | PA28 | 串口通信 |
+| UART0 RX | PA31 | 串口通信 |
+
+## 常见问题
+
+1. 抽象层函数的调用方法参考Tasks层函数
+
+2. 链接错误。C/C++函数相互调用的时候，需要在C/C++函数对应的头文件加入声明
+```cpp
+#ifdef __cplusplus
+extern "C" {
+#endif
+/* C/C++相互调用的函数声明 */
+#ifdef __cplusplus
+}
+#endif
+```
+在修改程序源码、文件名、文件夹名之后，CCS可能会出现编译缓存不刷新的问题，导致链接出错，通常的报错是修改过的文件中被调用的函数未定义，此时只需要删除Debug文件夹（Clean Projects不一定有效），清理缓存之后再进行编译即可
+
+3. 硬件配置问题。在检查软件逻辑无误之后，如果无法触发某种功能，请首先打开.syscfg文件检查引脚配置（PinMux）、中断配置（Interrupt Configuration），使用中断需要调用`NVIC_Enable_IT()`使能对应的中断

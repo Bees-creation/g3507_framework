@@ -6,29 +6,29 @@
 
 #include "drv_dma.h"
 
-#if defined DMA_BASE
-#if defined DMA_CH_0_TRIG
+#if defined DMA
+#if defined DMA_CHANNEL_0
 Struct_DMA_Manage_Object DMA_CH0_Manage_Object;
 #endif
-#if defined DMA_CH_1_TRIG
+#if defined DMA_CHANNEL_1
 Struct_DMA_Manage_Object DMA_CH1_Manage_Object;
 #endif
-#if defined DMA_CH_2_TRIG
+#if defined DMA_CHANNEL_2
 Struct_DMA_Manage_Object DMA_CH2_Manage_Object;
 #endif
-#if defined DMA_CH_3_TRIG
+#if defined DMA_CHANNEL_3
 Struct_DMA_Manage_Object DMA_CH3_Manage_Object;
 #endif
-#if defined DMA_CH_4_TRIG
+#if defined DMA_CHANNEL_4
 Struct_DMA_Manage_Object DMA_CH4_Manage_Object;
 #endif
-#if defined DMA_CH_5_TRIG
+#if defined DMA_CHANNEL_5
 Struct_DMA_Manage_Object DMA_CH5_Manage_Object;
 #endif
-#if defined DMA_CH_6_TRIG
+#if defined DMA_CHANNEL_6
 Struct_DMA_Manage_Object DMA_CH6_Manage_Object;
 #endif
-#if defined DMA_CH_7_TRIG
+#if defined DMA_CHANNEL_7
 Struct_DMA_Manage_Object DMA_CH7_Manage_Object;
 #endif
 #endif
@@ -39,10 +39,10 @@ Struct_DMA_Manage_Object* DMA_Init(
     uint32_t Src_Address,
     uint32_t Dest_Address,
     uint16_t Package_Size) {
-#if defined DMA_BASE
+#if defined DMA
     if (DMAx == DMA) {
-#if defined DMA_CH_0_TRIG
-        if (DMA_CH_CHAN_ID == DMA_CH_0_TRIG) {
+#if defined DMA_CHANNEL_0
+        if (DMA_CH_CHAN_ID == DMA_CHANNEL_0) {
             DMA_CH0_Manage_Object.DMA_Handler = DMA;
             DMA_CH0_Manage_Object.DMA_Channel = DMA_CH_CHAN_ID;
             DMA_CH0_Manage_Object.Src_Address = Src_Address;
@@ -52,8 +52,8 @@ Struct_DMA_Manage_Object* DMA_Init(
             return &DMA_CH0_Manage_Object;
         }
 #endif
-#if defined DMA_CH_1_TRIG
-        if (DMA_CH_CHAN_ID == DMA_CH_1_TRIG) {
+#if defined DMA_CHANNEL_1
+        if (DMA_CH_CHAN_ID == DMA_CHANNEL_1) {
             DMA_CH1_Manage_Object.DMA_Handler = DMA;
             DMA_CH1_Manage_Object.DMA_Channel = DMA_CH_CHAN_ID;
             DMA_CH1_Manage_Object.Src_Address = Src_Address;
@@ -63,8 +63,8 @@ Struct_DMA_Manage_Object* DMA_Init(
             return &DMA_CH1_Manage_Object;
         }
 #endif
-#if defined DMA_CH_2_TRIG
-        if (DMA_CH_CHAN_ID == DMA_CH_2_TRIG) {
+#if defined DMA_CHANNEL_2
+        if (DMA_CH_CHAN_ID == DMA_CHANNEL_2) {
             DMA_CH2_Manage_Object.DMA_Handler = DMA;
             DMA_CH2_Manage_Object.DMA_Channel = DMA_CH_CHAN_ID;
             DMA_CH2_Manage_Object.Src_Address = Src_Address;
@@ -74,8 +74,8 @@ Struct_DMA_Manage_Object* DMA_Init(
             return &DMA_CH2_Manage_Object;
         }
 #endif
-#if defined DMA_CH_3_TRIG
-        if (DMA_CH_CHAN_ID == DMA_CH_3_TRIG) {
+#if defined DMA_CHANNEL_3
+        if (DMA_CH_CHAN_ID == DMA_CHANNEL_3) {
             DMA_CH3_Manage_Object.DMA_Handler = DMA;
             DMA_CH3_Manage_Object.DMA_Channel = DMA_CH_CHAN_ID;
             DMA_CH3_Manage_Object.Src_Address = Src_Address;
@@ -85,8 +85,8 @@ Struct_DMA_Manage_Object* DMA_Init(
             return &DMA_CH3_Manage_Object;
         }
 #endif
-#if defined DMA_CH_4_TRIG
-        if (DMA_CH_CHAN_ID == DMA_CH_4_TRIG) {
+#if defined DMA_CHANNEL_4
+        if (DMA_CH_CHAN_ID == DMA_CHANNEL_4) {
             DMA_CH4_Manage_Object.DMA_Handler = DMA;
             DMA_CH4_Manage_Object.DMA_Channel = DMA_CH_CHAN_ID;
             DMA_CH4_Manage_Object.Src_Address = Src_Address;
@@ -96,8 +96,8 @@ Struct_DMA_Manage_Object* DMA_Init(
             return &DMA_CH4_Manage_Object;
         }
 #endif
-#if defined DMA_CH_5_TRIG
-        if (DMA_CH_CHAN_ID == DMA_CH_5_TRIG) {
+#if defined DMA_CHANNEL_5
+        if (DMA_CH_CHAN_ID == DMA_CHANNEL_5) {
             DMA_CH5_Manage_Object.DMA_Handler = DMA;
             DMA_CH5_Manage_Object.DMA_Channel = DMA_CH_CHAN_ID;
             DMA_CH5_Manage_Object.Src_Address = Src_Address;
@@ -107,8 +107,8 @@ Struct_DMA_Manage_Object* DMA_Init(
             return &DMA_CH5_Manage_Object;
         }
 #endif
-#if defined DMA_CH_6_TRIG
-        if (DMA_CH_CHAN_ID == DMA_CH_6_TRIG) {
+#if defined DMA_CHANNEL_6
+        if (DMA_CH_CHAN_ID == DMA_CHANNEL_6) {
             DMA_CH6_Manage_Object.DMA_Handler = DMA;
             DMA_CH6_Manage_Object.DMA_Channel = DMA_CH_CHAN_ID;
             DMA_CH6_Manage_Object.Src_Address = Src_Address;
@@ -118,8 +118,8 @@ Struct_DMA_Manage_Object* DMA_Init(
             return &DMA_CH6_Manage_Object;
         }
 #endif
-#if defined DMA_CH_7_TRIG
-        if (DMA_CH_CHAN_ID == DMA_CH_7_TRIG) {
+#if defined DMA_CHANNEL_7
+        if (DMA_CH_CHAN_ID == DMA_CHANNEL_7) {
             DMA_CH7_Manage_Object.DMA_Handler = DMA;
             DMA_CH7_Manage_Object.DMA_Channel = DMA_CH_CHAN_ID;
             DMA_CH7_Manage_Object.Src_Address = Src_Address;
@@ -135,6 +135,9 @@ Struct_DMA_Manage_Object* DMA_Init(
 }
 
 void DMA_Config(Struct_DMA_Manage_Object *DMA_Manage_Object) {
+    DL_DMA_disableChannel(
+        DMA_Manage_Object->DMA_Handler,
+        DMA_Manage_Object->DMA_Channel);
     DL_DMA_setSrcAddr(
         DMA_Manage_Object->DMA_Handler,
         DMA_Manage_Object->DMA_Channel,
@@ -155,6 +158,9 @@ uint8_t DMA_Send_Data(Struct_DMA_Manage_Object *DMA_Manage_Object, uint8_t *pDat
     if (DMA_Manage_Object->Busy == STATUS_READY) {
         DMA_Manage_Object->Src_Address = (uint32_t)pData;
         DMA_Manage_Object->Package_Size = Size;
+        DL_DMA_disableChannel(
+            DMA_Manage_Object->DMA_Handler,
+            DMA_Manage_Object->DMA_Channel);
         DL_DMA_setSrcAddr(
             DMA_Manage_Object->DMA_Handler,
             DMA_Manage_Object->DMA_Channel,
@@ -179,6 +185,9 @@ uint8_t DMA_Receive_Data(Struct_DMA_Manage_Object *DMA_Manage_Object, uint8_t *p
     if (DMA_Manage_Object->Busy == STATUS_READY) {
         DMA_Manage_Object->Dest_Address = (uint32_t)pData;
         DMA_Manage_Object->Package_Size = Size;
+        DL_DMA_disableChannel(
+            DMA_Manage_Object->DMA_Handler,
+            DMA_Manage_Object->DMA_Channel);
         DL_DMA_setDestAddr(
             DMA_Manage_Object->DMA_Handler,
             DMA_Manage_Object->DMA_Channel,

@@ -12,8 +12,6 @@
 
 #include "Drivers/DMA/drv_dma.h"
 
-#include <string.h>
-
 #define UART_BUFFER_SIZE 128
 
 /* UART寄存器位定义 */
@@ -46,18 +44,42 @@ typedef struct Struct_UART_Manage_Object {
     UART_Callback Callback_Function;
 } Struct_UART_Manage_Object;
 
+#if defined UART0_BASE
+#define UART0 UART0
+extern Struct_UART_Manage_Object UART0_Manage_Object;
+#endif
+#if defined UART1_BASE
+#define UART1 UART1
+extern Struct_UART_Manage_Object UART1_Manage_Object;
+#endif
+#if defined UART2_BASE
+#define UART2 UART2
+extern Struct_UART_Manage_Object UART2_Manage_Object;
+#endif
+#if defined UART3_BASE
+#define UART3 UART3
+extern Struct_UART_Manage_Object UART3_Manage_Object;
+#endif
+#if defined UART4_BASE
+#define UART4 UART4
+extern Struct_UART_Manage_Object UART4_Manage_Object;
+#endif
+#if defined UART5_BASE
+#define UART5 UART5
+extern Struct_UART_Manage_Object UART5_Manage_Object;
+#endif
+#if defined UART6_BASE
+#define UART6 UART6
+extern Struct_UART_Manage_Object UART6_Manage_Object;
+#endif
+#if defined UART7_BASE
+#define UART7 UART7
+extern Struct_UART_Manage_Object UART7_Manage_Object;
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-extern Struct_UART_Manage_Object UART0_Manage_Object;
-extern Struct_UART_Manage_Object UART1_Manage_Object;
-extern Struct_UART_Manage_Object UART2_Manage_Object;
-extern Struct_UART_Manage_Object UART3_Manage_Object;
-extern Struct_UART_Manage_Object UART4_Manage_Object;
-extern Struct_UART_Manage_Object UART5_Manage_Object;
-extern Struct_UART_Manage_Object UART6_Manage_Object;
-extern Struct_UART_Manage_Object UART7_Manage_Object;
 
 /**
  * @brief UART初始化
@@ -71,7 +93,7 @@ extern Struct_UART_Manage_Object UART7_Manage_Object;
  */
 void UART_DMA_Init(
     UART_Regs *UARTx, UART_Callback Callback_Function, uint16_t Rx_Buffer_Length,
-    DMA_Regs *DMAx, uint8_t DMA_Tx_CH_CHAN_ID, uint8_t DMA_Rx_CH_CHAN_ID);
+    DMA_Regs *DMAx, uint8_t DMA_Rx_CH_CHAN_ID, uint8_t DMA_Tx_CH_CHAN_ID);
 
 /**
  * @brief UART发送
