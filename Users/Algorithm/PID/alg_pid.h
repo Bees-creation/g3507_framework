@@ -26,99 +26,126 @@ public:
      * 
      * @retval 误差积分值
      */
-    inline float Get_Integral_Error() const;
+    inline float Get_Integral_Error() const {
+        return Integral_Error;
+    }
 
     /**
      * @brief 获取输出值
      * 
      * @retval 输出值
      */
-    inline float Get_Out() const;
+    inline float Get_Out() const {
+        return Out;
+    }
 
     /**
      * @brief 设定比例系数
      * 
      * @param __K_P 比例系数
      */
-    inline void Set_K_P(const float &__K_P);
+    inline void Set_K_P(const float &__K_P) {
+        K_P = __K_P;
+    }
 
     /**
      * @brief 设定积分系数
      * 
      * @param __K_I 积分系数
      */
-    inline void Set_K_I(const float &__K_I);
+    inline void Set_K_I(const float &__K_I) {
+        K_I = __K_I;
+    }
 
     /**
      * @brief 设定微分系数
      * 
      * @param __K_D 微分系数
      */
-    inline void Set_K_D(const float &__K_D);
+    inline void Set_K_D(const float &__K_D) {
+        K_D = __K_D;
+    }
 
     /**
      * @brief 设定前馈系数
      * 
      * @param __K_F 前馈系数
      */
-    inline void Set_K_F(const float &__K_F);
+    inline void Set_K_F(const float &__K_F) {
+        K_F = __K_F;
+    }
 
     /**
      * @brief 设定积分限幅
      * 
      * @param __I_Out_Max 积分限幅
      */
-    inline void Set_I_Out_Max(const float &__I_Out_Max);
-
+    inline void Set_I_Out_Max(const float &__I_Out_Max) {
+        I_Out_Max = __I_Out_Max;
+    }
 
     /**
      * @brief 设定输出限幅
      * 
      * @param __Out_Max 输出限幅
      */
-    inline void Set_Out_Max(const float &__Out_Max);
+    inline void Set_Out_Max(const float &__Out_Max) {
+        Out_Max = __Out_Max;
+    }
 
     /**
      * @brief 设定变速积分全速阈值
      * 
      * @param __I_Variable_Speed_A 变速积分全速阈值
      */
-    inline void Set_I_Variable_Speed_A(const float &__I_Variable_Speed_A);
+    inline void Set_I_Variable_Speed_A(const float &__I_Variable_Speed_A) {
+        I_Variable_Speed_A = __I_Variable_Speed_A;
+    }
 
     /**
      * @brief 设定变速积分启动阈值
      * 
      * @param __I_Variable_Speed_B 变速积分启动阈值
      */
-    inline void Set_I_Variable_Speed_B(const float &__I_Variable_Speed_B);
+    inline void Set_I_Variable_Speed_B(const float &__I_Variable_Speed_B) {
+        I_Variable_Speed_B = __I_Variable_Speed_B;
+    }
 
     /**
      * @brief 设定积分分离阈值
      * 
      * @param __I_Separate_Threshold 积分分离阈值
      */
-    inline void Set_I_Separate_Threshold(const float &__I_Separate_Threshold);
+    inline void Set_I_Separate_Threshold(const float &__I_Separate_Threshold) {
+        I_Separate_Threshold = __I_Separate_Threshold;
+    }
 
     /**
      * @brief 设定目标值
      * 
      * @param __Target 目标值
      */
-    inline void Set_Target(const float &__Target);
+    inline void Set_Target(const float &__Target) {
+        Target = __Target;
+    }
 
     /**
      * @brief 设定当前值
      * 
      * @param __Now 当前值
      */
-    inline void Set_Now(const float &__Now);
+    inline void Set_Now(const float &__Now) {
+        Now = __Now;
+    }
 
     /**
      * @brief 设定误差积分值
      * 
      * @param __Integral_Error 误差积分值
      */
-    inline void Set_Integral_Error(const float &__Integral_Error);
+    inline void Set_Integral_Error(const float &__Integral_Error) {
+        Integral_Error = __Integral_Error;
+    }
 
     /**
      * @brief 进行一次PID计算，并将结果输出到Out，以D_T作为时间间隔

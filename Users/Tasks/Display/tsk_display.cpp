@@ -6,6 +6,10 @@
 
 #include "tsk_display.h"
 
+/* 在此处引用任务函数头文件 -- begin -- */
+#include "Tasks/Visual/tsk_visual.h"
+/* 在此处引用任务函数头文件 --  end  -- */
+
 // 运动状态数据
 Struct_Motion_State MotionState = {0};
 
@@ -25,7 +29,8 @@ void Display_Init(void) {
 
 void Display_Task(void) {
     // 设置数据
-    Serialport_Object.Set_Data(3, &MotionState.angle, &MotionState.omega, &MotionState.torque);
+    // Serialport_Object.Set_Data(3, &MotionState.angle, &MotionState.omega, &MotionState.torque);
+    Serialport_Object.Set_Data(8, &Channels[0], &Channels[1], &Channels[2], &Channels[3], &Channels[4], &Channels[5], &Channels[6], &Channels[7]);
     // TIM定时器中断检查串口接收空闲状态，并重启DMA接收
     Serialport_Object.TIM_Read_PeriodElapsedCallback();
     // TIM定时器中断增加数据到发送缓冲区，并开启发送

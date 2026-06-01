@@ -1,0 +1,36 @@
+/**
+ * @brief 红外传感器
+ * @date 2026/5/31
+ * @copyright https://github.com/Bees-creation (c) 2026
+ */
+
+#ifndef DVC_INFRAREDSENSOR_H
+#define DVC_INFRAREDSENSOR_H
+
+#include "Drivers/BSP/drv_bsp.h"
+
+/**
+ * @brief 八通道红外巡线模块
+ */
+class Class_8C_IRS {
+public:
+    void Init(GPIO_PORT *__Selector_Port_AD0, GPIO_PIN __Selector_Pin_AD0, GPIO_PORT *__Selector_Port_AD1, GPIO_PIN __Selector_Pin_AD1, GPIO_PORT *__Selector_Port_AD2, GPIO_PIN __Selector_Pin_AD2, GPIO_PORT *__Data_Port, GPIO_PIN __Data_Pin);
+
+    void TIM_Feedback_PeriodElapsedCallback();
+
+    inline uint8_t *Get_Channels(void) {
+        return Channels;
+    }
+
+protected:
+    uint8_t Channels[8];
+
+    // 3线转8线数据选择器引脚
+    GPIO_PORT *Selector_Ports[3];
+    GPIO_PIN Selector_Pins[3];
+    // 输出引脚
+    GPIO_PORT *Data_Port;
+    GPIO_PIN Data_Pin;
+};
+
+#endif
