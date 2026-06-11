@@ -4,7 +4,8 @@
  * @copyright https://github.com/Bees-creation (c) 2026
  */
 
-#include "drv_freertos.h"
+#include "FreeRTOS.h"
+#include "task.h"
 
 /**
  * @brief 栈溢出检测回调函数

@@ -52,11 +52,11 @@ inline void Error_Handler() {
 /**
  * @brief 阻塞式任务函数入口
  */
-static void Block_Task_Entry(void);
+static void _Block_Task_Entry(void);
 /**
  * @brief 并发式任务函数入口
  */
-static void Periodic_Task_Entry(void *param);
+static void _Periodic_Task_Entry(void *param);
 
 /**
  * @brief 阻塞式任务注册函数
@@ -82,6 +82,6 @@ void Task_Init(void);
 /**
  * @brief 测试任务函数
  */
-void Task_Debug(void);
+void Debug_Task(void);
 
 #endif /* TSK_CONFIG_H */

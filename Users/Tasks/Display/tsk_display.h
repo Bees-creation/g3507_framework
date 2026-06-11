@@ -9,7 +9,7 @@
 
 #include "Device/Serialport/dvc_serialport.h"
 
-typedef struct Struct_Motion_State {
+typedef struct Struct {
     float angle;
     float omega;
     float torque;
@@ -28,6 +28,6 @@ void Display_Task(void);
 /**
  * @brief 串口工具回调函数
  */
-void UART0_Callback(uint8_t *Buffer, uint16_t Length);
+void Serialport_Callback(uint8_t *Buffer, uint16_t Length);
 
 #endif /* TSK_DISPLAY_H */

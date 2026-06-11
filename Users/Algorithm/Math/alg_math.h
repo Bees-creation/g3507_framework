@@ -35,7 +35,7 @@ constexpr float MATH_CELSIUS_MINUS_KELVIN = 273.15f;
  * @retval Type x输出值
  */
 template<typename Type>
-Type Basic_Math_Constrain(Type x, Type Min, Type Max) {
+Type Math_Constrain(Type x, Type Min, Type Max) {
     if (x < Min) {
         x = Min;
     }

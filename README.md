@@ -50,6 +50,19 @@
 | GPIO | PB22 | 板载LED |
 | UART0 TX | PA28 | 串口通信 |
 | UART0 RX | PA31 | 串口通信 |
+| GPIO | PB23 | 红外巡线 |
+| GPIO | PB26 | 红外巡线 |
+| GPIO | PB27 | 红外巡线 |
+| GPIO | PA29 | 红外巡线 |
+| GPIO | PA14 | 软件编码器 |
+| GPIO | PA15 | 软件编码器 |
+| GPIO | PA16 | 软件编码器 |
+| GPIO | PA17 | 软件编码器 |
+| GPIO | PA24 | 电机驱动 |
+| GPIO | PA25 | 电机驱动 |
+| GPIO | PA26 | 电机驱动 |
+| TIMA0 | PA0 | PWM CH0 |
+| TIMA0 | PA1 | PWM CH1 |
 
 ## 常见问题
 

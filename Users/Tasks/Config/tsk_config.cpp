@@ -8,11 +8,11 @@
 
 /** 在此处引用任务函数头文件 -- begin -- */
 #include "Tasks/Display/tsk_display.h"
-#include "Tasks/Visual/tsk_visual.h"
+#include "Tasks/Sensor/tsk_sensor.h"
 #include "Tasks/Motion/tsk_motion.h"
 /** 在此处引用任务函数头文件 --  end  -- */
 
-static void Block_Task_Entry(void) {
+static void _Block_Task_Entry(void) {
     for (int i = 0; i < MAX_BLOCK_TASK_NUM; i++) {
         if (Block_Task_List[i] != NULL) {
             Block_Task_List[i]();
@@ -20,7 +20,7 @@ static void Block_Task_Entry(void) {
     }
 }
 
-static void Periodic_Task_Entry(void *param) {
+static void _Periodic_Task_Entry(void *param) {
     Struct_Periodic_Task_Manage_Object *task = (Struct_Periodic_Task_Manage_Object*)param;
     TickType_t xLastWakeTime = xTaskGetTickCount();
 
@@ -50,7 +50,7 @@ uint8_t Register_Periodic_Task(uint32_t _period, Task_Function_t _func,
     task->Available = 1;
 
     BaseType_t ret = xTaskCreate(
-        Periodic_Task_Entry,        // 统一的入口
+        _Periodic_Task_Entry,        // 统一的入口
         "Task",                     // 任务名
         stack_size,                 // 外部指定栈大小
         (void*)task,                // 传递参数，就是任务管理结构体指针
@@ -71,12 +71,12 @@ uint8_t Register_Periodic_Task(uint32_t _period, Task_Function_t _func,
 void Task_Init(void) {
     /** 在此处执行初始化操作 -- begin -- */
     Display_Init();
-    Visual_Init();
+    Sensor_Init();
     Motion_Init();
     /** 在此处执行初始化操作 --  end  -- */
 
     // 板载LED灯闪烁任务以500ms为周期调用
-    if (Register_Periodic_Task(500, Task_Debug, 64, 2) != STATUS_DONE) {
+    if (Register_Periodic_Task(500, Debug_Task, 64, 2) != STATUS_DONE) {
         Error_Handler();
     }
 
@@ -85,23 +85,23 @@ void Task_Init(void) {
         Error_Handler();
     }
 
-    if (Register_Block_Task(Visual_Task) != STATUS_DONE) {
+    if (Register_Block_Task(Sensor_Task) != STATUS_DONE) {
         Error_Handler();
     }
 
-    if (Register_Periodic_Task(10, Motion_Task, 128, 2) != STATUS_DONE) {
-        Error_Handler();
-    }
+    // if (Register_Periodic_Task(10, Motion_Task, 128, 2) != STATUS_DONE) {
+    //     Error_Handler();
+    // }
     /** 在此处注册任务函数 --  end  -- */
 
     // 阻塞式任务函数以10ms为周期调用
-    if (Register_Periodic_Task(10, Block_Task_Entry, 256, 2) != STATUS_DONE) {
+    if (Register_Periodic_Task(10, _Block_Task_Entry, 256, 2) != STATUS_DONE) {
         Error_Handler();
     }
 
     vTaskStartScheduler();
 }
 
-void Task_Debug(void) {
+void Debug_Task(void) {
     GPIO_Toggle_Pins(GPIO_PORT_B, GPIO_PIN_22);
 }

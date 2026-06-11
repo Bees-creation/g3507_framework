@@ -88,12 +88,11 @@ extern "C" {
  * @param Callback_Function 处理回调函数
  * @param Rx_Buffer_Length 接收缓冲区长度，以字节为单位
  * @param DMAx DMA编号
- * @param DMA_Tx_CH_CHAN_ID DMA发送通道ID
- * @param DMA_Rx_CH_CHAN_ID DMA接收通道ID
+ * @param DMA_Tx_CH_CHAN_ID DMA发送通道ID，-1表示不使用
+ * @param DMA_Rx_CH_CHAN_ID DMA接收通道ID，-1表示不使用
  */
 void UART_DMA_Init(
-    UART_Regs *UARTx, UART_Callback Callback_Function, uint16_t Rx_Buffer_Length,
-    DMA_Regs *DMAx, uint8_t DMA_Rx_CH_CHAN_ID, uint8_t DMA_Tx_CH_CHAN_ID);
+    UART_Regs *UARTx, UART_Callback Callback_Function, uint16_t Rx_Buffer_Length, DMA_Regs *DMAx, int8_t DMA_Rx_CH_CHAN_ID, int8_t DMA_Tx_CH_CHAN_ID);
 
 /**
  * @brief UART发送
@@ -113,7 +112,7 @@ uint8_t UART_Send_Data(UART_Regs *UARTx, uint8_t *Data, uint16_t Length);
  * @param Length 长度
  * @return 执行状态
  */
-uint8_t UART_DMA_Receive(UART_Regs *UARTx, uint8_t *pData, uint16_t Size);
+uint8_t UART_Receive_Data(UART_Regs *UARTx, uint8_t *pData, uint16_t Length);
 
 /**
  * @brief UART中断处理函数

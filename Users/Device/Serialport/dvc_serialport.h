@@ -143,6 +143,11 @@ protected:
      * @brief 串口发送
      */
     void Send();
+
+    /**
+     * @brief 串口接收
+     */
+    void Receive();
 };
 
 #endif /* DVC_SERIALPORT_H */

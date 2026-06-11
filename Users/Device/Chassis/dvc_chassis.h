@@ -69,16 +69,13 @@ protected:
  * 
  * @tparam Motor 电机类
  */
-template <class Motor>
 class Class_Differential_Chassis:public Class_Chassis {
-    // Motor必须是由Class_Motor基类派生得到的类型
-    static_assert(std::is_base_of<Class_Motor, Motor>::value, "Motor must derive from Class_Motor");
 public:
-    Motor Left_Motor;
-    Motor Right_Motor;
+    Class_Motor &Left_Motor;
+    Class_Motor &Right_Motor;
 
-    Class_Differential_Chassis(float __Wheel_Track, float __Wheel_Radius)
-    : Wheel_Track(__Wheel_Track), Wheel_Radius(__Wheel_Radius) {
+    Class_Differential_Chassis(Class_Motor &__Left_Motor, Class_Motor &__Right_Motor, float __Wheel_Track, float __Wheel_Radius)
+    : Left_Motor(__Left_Motor), Right_Motor(__Right_Motor), Wheel_Track(__Wheel_Track), Wheel_Radius(__Wheel_Radius) {
     }
 
     virtual void TIM_Update_PeriodElapsedCallback() override;
@@ -92,38 +89,5 @@ protected:
     // 轮半径
     float Wheel_Radius;
 };
-
-template <class Motor>
-void Class_Differential_Chassis<Motor>::TIM_Update_PeriodElapsedCallback() {
-    Kinematics_Forward_Resolution();
-    Kinematics_Inverse_Resolution();
-    Left_Motor.TIM_Feedback_PeriodElapsedCallback();
-    Right_Motor.TIM_Feedback_PeriodElapsedCallback();
-    Left_Motor.TIM_Calculate_PeriodElapsedCallback();
-    Right_Motor.TIM_Calculate_PeriodElapsedCallback();
-    Left_Motor.TIM_Output_PeriodElapsedCallback();
-    Right_Motor.TIM_Output_PeriodElapsedCallback();
-}
-
-template <class Motor>
-void Class_Differential_Chassis<Motor>::Kinematics_Forward_Resolution(void) {
-    float left = Left_Motor.Get_Omega();
-    float right = Right_Motor.Get_Omega();
-
-    /* 差速底盘的运动学正解算 */
-    Now_Velocity_X = 0;
-    Now_Velocity_Y = (left - right) / 2.0f * Wheel_Radius;
-    Now_Omega = (left + right) * Wheel_Radius / Wheel_Track;
-}
-
-template <class Motor>
-void Class_Differential_Chassis<Motor>::Kinematics_Inverse_Resolution(void) {
-    /* 差速底盘的运动学逆解算 */
-    float left = Target_Velocity_Y / Wheel_Radius + Target_Omega * Wheel_Track / Wheel_Radius / 2.0f;
-    float right = -Target_Velocity_Y / Wheel_Radius + Target_Omega * Wheel_Track / Wheel_Radius / 2.0f;
-    
-    Left_Motor.Set_Absolute_Target_Omega(left);
-    Right_Motor.Set_Absolute_Target_Omega(right);
-}
 
 #endif /* DVC_CHASSIS_H */

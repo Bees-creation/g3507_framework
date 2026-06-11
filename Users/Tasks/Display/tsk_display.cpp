@@ -7,7 +7,7 @@
 #include "tsk_display.h"
 
 /* 在此处引用任务函数头文件 -- begin -- */
-#include "Tasks/Visual/tsk_visual.h"
+#include "Tasks/Sensor/tsk_sensor.h"
 /* 在此处引用任务函数头文件 --  end  -- */
 
 // 运动状态数据
@@ -23,21 +23,20 @@ const char Serialport_Rx_Variable_Assignment_List[][SERIALPORT_RX_VARIABLE_ASSIG
 };
 
 void Display_Init(void) {
-    UART_DMA_Init(UART0, UART0_Callback, UART_BUFFER_SIZE, DMA, DMA_CHANNEL_0, DMA_CHANNEL_1);
-    Serialport_Object.Init(UART0, 3, (const char**)Serialport_Rx_Variable_Assignment_List, Serialport_Data_Type_JUSTFLOAT, 0x00, 0x00);
+    UART_DMA_Init(UART1, Serialport_Callback, UART_BUFFER_SIZE, DMA, DMA_CHANNEL_0, DMA_CHANNEL_1);
+    Serialport_Object.Init(UART1, 3, (const char**)Serialport_Rx_Variable_Assignment_List, Serialport_Data_Type_JUSTFLOAT, 0x00, 0x00);
 }
 
 void Display_Task(void) {
     // 设置数据
-    // Serialport_Object.Set_Data(3, &MotionState.angle, &MotionState.omega, &MotionState.torque);
-    Serialport_Object.Set_Data(8, &Channels[0], &Channels[1], &Channels[2], &Channels[3], &Channels[4], &Channels[5], &Channels[6], &Channels[7]);
+    Serialport_Object.Set_Data(2, &Yaw, &GyroZ);
     // TIM定时器中断检查串口接收空闲状态，并重启DMA接收
     Serialport_Object.TIM_Read_PeriodElapsedCallback();
     // TIM定时器中断增加数据到发送缓冲区，并开启发送
     Serialport_Object.TIM_Write_PeriodElapsedCallback();
 }
 
-void UART0_Callback(uint8_t *Buffer, uint16_t Length) {
+void Serialport_Callback(uint8_t *Buffer, uint16_t Length) {
     Serialport_Object.UART_RxCpltCallback();
 
     switch (Serialport_Object.Get_Variable_Index()) {
@@ -53,6 +52,4 @@ void UART0_Callback(uint8_t *Buffer, uint16_t Length) {
     default:
         break;
     }
-
-    UART_DMA_Receive(UART0, UART0_Manage_Object.Rx_Buffer, UART_BUFFER_SIZE);
 }

@@ -116,10 +116,12 @@ protected:
 };
 
 /**
- * @brief 有刷电机，PWM驱动
+ * @brief 使用drv8701e驱动芯片的有刷电机
  */
-class Class_Brush_Motor:public Class_Motor {
+class Class_Brush_Motor_Drv8701e:public Class_Motor {
 public:
+    Class_Software_QEI QEI;
+
     /**
      * @brief 初始化函数
      * 
@@ -128,7 +130,7 @@ public:
      * @param __Control_Method 控制方法
      * @param __Control_Algorithm 控制算法
      */
-    void Init(TIMER_INST *TIMx, TIMER_CHANNEL __Channel, const Enum_Motor_Control_Method &__Control_Method, const Enum_Motor_Control_Algorithm &__Control_Algorithm);
+    void Init(TIMER_INST *TIMx, TIMER_CHANNEL __Channel, const Enum_Motor_Control_Method &__Control_Method, const Enum_Motor_Control_Algorithm &__Control_Algorithm, GPIO_PORT *__Direction_Port, GPIO_PIN __Direction_Pin);
 
     /**
      * @brief 启动电机
@@ -146,48 +148,18 @@ public:
 
     virtual void TIM_Calculate_PeriodElapsedCallback() override;
 
-protected:
-    // 绑定的定时器
-    TIMER_INST *TIM = nullptr;
-    // 绑定的定时器通道
-    TIMER_CHANNEL Channel;
-};
-
-/**
- * @brief 使用drv8701e驱动芯片的有刷电机
- */
-class Class_Brush_Motor_Drv8701e:public Class_Brush_Motor {
-public:
-    Class_Software_QEI QEI;
-
-    /**
-     * @brief 初始化函数
-     * 
-     * @param TIMx 绑定的定时器
-     * @param __Channel 绑定的定时器通道
-     * @param __Control_Method 控制方法
-     * @param __Control_Algorithm 控制算法
-     */
-    void Init(TIMER_INST *TIMx, TIMER_CHANNEL __Channel, const Enum_Motor_Control_Method &__Control_Method, const Enum_Motor_Control_Algorithm &__Control_Algorithm, GPIO_PORT *__Direction_Port, GPIO_PIN __Direction_Pin, GPIO_PORT *__Enable_Port, GPIO_PIN __Enable_Pin);
-
     virtual void TIM_Output_PeriodElapsedCallback() override;
 
     virtual void TIM_Feedback_PeriodElapsedCallback() override;
 
 protected:
+    // 绑定的定时器
+    TIMER_INST *TIM = nullptr;
+    // 绑定的定时器通道
+    TIMER_CHANNEL Channel;
     // 方向控制引脚
     GPIO_PORT *Direction_Port;
     GPIO_PIN Direction_Pin;
-    // 使能控制引脚
-    GPIO_PORT *Enable_Port;
-    GPIO_PIN Enable_Pin;
-
-    /**
-     * @brief 使能芯片
-     */
-    inline void Enable_Motor(void) {
-        GPIO_Set_Pins(Enable_Port, Enable_Pin, STATUS_ENABLE);
-    }
 };
 
 #endif /* DVC_MOTOR_H */

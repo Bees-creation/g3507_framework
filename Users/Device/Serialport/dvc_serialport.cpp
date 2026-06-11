@@ -56,7 +56,7 @@ void Class_Serialport::Init(UART_Regs *UARTx, uint8_t __Serialport_Rx_Variable_A
     Frame_Trailer = __Frame_Trailer;
 
     // 开启DMA接收
-    UART_DMA_Receive(UARTx, UART_Manage_Object->Rx_Buffer, UART_BUFFER_SIZE);
+    UART_Receive_Data(UARTx, UART_Manage_Object->Rx_Buffer, UART_BUFFER_SIZE);
 }
 
 int8_t Class_Serialport::Get_Variable_Index() {
@@ -90,7 +90,7 @@ void Class_Serialport::TIM_Write_PeriodElapsedCallback() {
 
 void Class_Serialport::TIM_Read_PeriodElapsedCallback() {
     UART_Manage_Object->Callback_Function(UART_Manage_Object->Rx_Buffer, UART_Manage_Object->Rx_Buffer_Length);
-    UART_Manage_Object->DMA_Rx_Manage_Object->Busy = STATUS_READY;
+    Receive();
 }
 
 uint8_t Class_Serialport::Judge_Variable_Name() {
@@ -226,4 +226,8 @@ void Class_Serialport::Output() {
 
 void Class_Serialport::Send() {
     UART_Send_Data(UART_Manage_Object->UART_Handler, UART_Manage_Object->Tx_Buffer, Frame_Size);
+}
+
+void Class_Serialport::Receive() {
+    UART_Receive_Data(UART_Manage_Object->UART_Handler, UART_Manage_Object->Rx_Buffer, UART_Manage_Object->Rx_Buffer_Length);
 }

@@ -15,13 +15,13 @@
 /**
  * @brief 系统状态宏定义
  * 
- * @param STATUS_READY 就绪
- * @param STATUS_DONE 完成
- * @param STATUS_BUSY 忙碌
- * @param STATUS_ERROR 错误
- * @param STATUS_OOM 内存不足
- * @param STATUS_DISABLE 使能
- * @param STATUS_ENABLE 失能
+ * @def STATUS_READY 就绪
+ * @def STATUS_DONE 完成
+ * @def STATUS_BUSY 忙碌
+ * @def STATUS_ERROR 错误
+ * @def STATUS_OOM 内存不足
+ * @def STATUS_DISABLE 使能
+ * @def STATUS_ENABLE 失能
  */
 #ifndef STATUS_READY
 #define STATUS_READY 0
@@ -256,20 +256,14 @@ static inline void TIM_Set_Compare(TIMER_INST *TIMx, uint32_t value, TIMER_CHANN
 /**
  * @brief GPIO中断服务函数组，由用户重写
  */
-__WEAK void GPIOA_PIN14_IRQHandler(void);
-__WEAK void GPIOA_PIN16_IRQHandler(void);
+__WEAK void GPIOB_PIN2_IRQHandler(void);
+__WEAK void GPIOB_PIN23_IRQHandler(void);
 
 /**
  * @brief GPIOA中断服务函数
  */
 static inline void GPIOA_IRQHandler(void) {
     uint32_t pins = DL_GPIO_getPendingInterrupt(GPIO_PORT_A);
-    if (pins & GPIO_PIN_14) {
-        GPIOA_PIN14_IRQHandler();
-    }
-    if (pins & GPIO_PIN_16) {
-        GPIOA_PIN16_IRQHandler();
-    }
 }
 
 /**
@@ -277,6 +271,12 @@ static inline void GPIOA_IRQHandler(void) {
  */
 static inline void GPIOB_IRQHandler(void) {
     uint32_t pins = DL_GPIO_getPendingInterrupt(GPIO_PORT_B);
+    if (pins & GPIO_PIN_2) {
+        GPIOB_PIN2_IRQHandler();
+    }
+    if (pins & GPIO_PIN_23) {
+        GPIOB_PIN23_IRQHandler();
+    }
 }
 
 /**
