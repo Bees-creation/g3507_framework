@@ -23,14 +23,14 @@ void Class_Differential_Chassis::Kinematics_Forward_Resolution(void) {
 
     /* 差速底盘的运动学正解算 */
     Now_Velocity_X = 0;
-    Now_Velocity_Y = (left - right) / 2.0f * Wheel_Radius;
+    Now_Velocity_Y = (-left + right) / 2.0f * Wheel_Radius;
     Now_Omega = (left + right) * Wheel_Radius / Wheel_Track;
 }
 
 void Class_Differential_Chassis::Kinematics_Inverse_Resolution(void) {
     /* 差速底盘的运动学逆解算 */
-    float left = Target_Velocity_Y / Wheel_Radius + Target_Omega * Wheel_Track / Wheel_Radius / 2.0f;
-    float right = -Target_Velocity_Y / Wheel_Radius + Target_Omega * Wheel_Track / Wheel_Radius / 2.0f;
+    float left = -Target_Velocity_Y / Wheel_Radius + Target_Omega * Wheel_Track / Wheel_Radius / 2.0f;
+    float right = Target_Velocity_Y / Wheel_Radius + Target_Omega * Wheel_Track / Wheel_Radius / 2.0f;
     
     Left_Motor.Set_Absolute_Target_Omega(left);
     Right_Motor.Set_Absolute_Target_Omega(right);

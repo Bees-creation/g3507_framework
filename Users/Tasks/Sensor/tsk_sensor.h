@@ -12,7 +12,7 @@
 
 // 通道值，1表示轨迹
 extern float Channels[8];
-
+// 偏航角，偏航加速度
 extern float Yaw;
 extern float GyroZ;
 

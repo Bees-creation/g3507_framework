@@ -7,7 +7,7 @@
 #ifndef DVC_ENCODER_H
 #define DVC_ENCODER_H
 
-#include "Drivers/BSP/drv_bsp.h"
+#include "Drivers/GPIO/drv_gpio.h"
 #include "Algorithm/Math/alg_math.h"
 
 /**
@@ -19,7 +19,7 @@ public:
      * @brief 编码器初始化
      * 
      * @param __D_T 时间间隔
-     * @param __Scale 每圈的刻度
+     * @param __Scale 每圈刻度值
      */
     void Init(const float &__D_T, const float &__Scale);
     
@@ -36,11 +36,11 @@ public:
 protected:
     // 时间间隔
     float D_T;
-    // 每rad的刻度
+    // 每圈刻度值
     float Scale;
 
     // 刻度值
-    uint32_t Count;
+    int32_t Count;
     // 角度
     float Angle;
     // 角速度
@@ -67,7 +67,7 @@ public:
      * @brief 编码器初始化
      * 
      * @param __D_T 时间间隔
-     * @param __Scale 每圈的刻度
+     * @param __Scale 每圈刻度值
      * @param Phase_A_Port A相引脚
      * @param Phase_A_Pin A相引脚
      * @param Phase_B_Port B相引脚

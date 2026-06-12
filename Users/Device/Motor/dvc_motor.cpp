@@ -43,16 +43,17 @@ void Class_Brush_Motor_Drv8701e::Init(TIMER_INST *TIMx, TIMER_CHANNEL __Channel,
 
 void Class_Brush_Motor_Drv8701e::TIM_Output_PeriodElapsedCallback() {
     if (Out > 0) {
-        GPIO_Set_Pins(Direction_Port, Direction_Pin, STATUS_ENABLE);
+        GPIO_Set_Pins(Direction_Port, Direction_Pin, STATUS_DISABLE);
     }
     else {
-        GPIO_Set_Pins(Direction_Port, Direction_Pin, STATUS_DISABLE);
+        GPIO_Set_Pins(Direction_Port, Direction_Pin, STATUS_ENABLE);
     }
     // TIM设置输出比较值
     TIM_Set_Compare(TIM, Math_Abs(Out), Channel);
 }
 
 void Class_Brush_Motor_Drv8701e::TIM_Feedback_PeriodElapsedCallback() {
+    QEI.TIM_Update_PeriodElapsedCallback();
     Now_Omega = QEI.Get_Omega();
     Now_Angle += QEI.Get_Angle();
 }

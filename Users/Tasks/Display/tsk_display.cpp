@@ -8,18 +8,16 @@
 
 /* 在此处引用任务函数头文件 -- begin -- */
 #include "Tasks/Sensor/tsk_sensor.h"
+#include "Tasks/Motion/tsk_motion.h"
 /* 在此处引用任务函数头文件 --  end  -- */
-
-// 运动状态数据
-Struct_Motion_State MotionState = {0};
 
 // 串口工具
 Class_Serialport Serialport_Object;
 
 const char Serialport_Rx_Variable_Assignment_List[][SERIALPORT_RX_VARIABLE_ASSIGNMENT_LENGTH] = {
-    "angle",
-    "omega",
-    "torque",
+    "target_distance",
+    "target_speed",
+    "target_omega",
 };
 
 void Display_Init(void) {
@@ -29,7 +27,8 @@ void Display_Init(void) {
 
 void Display_Task(void) {
     // 设置数据
-    Serialport_Object.Set_Data(2, &Yaw, &GyroZ);
+    Serialport_Object.Set_Data(4, &QEI_State_Left.now_angle, &QEI_State_Left.now_omega, &QEI_State_Right.now_angle, &QEI_State_Right.now_omega);
+    // Serialport_Object.Set_Data(2, &Chassis_State.now_speed, &Chassis_State.now_omega);
     // TIM定时器中断检查串口接收空闲状态，并重启DMA接收
     Serialport_Object.TIM_Read_PeriodElapsedCallback();
     // TIM定时器中断增加数据到发送缓冲区，并开启发送
@@ -41,13 +40,13 @@ void Serialport_Callback(uint8_t *Buffer, uint16_t Length) {
 
     switch (Serialport_Object.Get_Variable_Index()) {
     case 0:
-        MotionState.angle = Serialport_Object.Get_Variable_Value();
+        Chassis_State.target_distance = Serialport_Object.Get_Variable_Value();
         break;
     case 1:
-        MotionState.omega = Serialport_Object.Get_Variable_Value();
+        Chassis_State.target_speed = Serialport_Object.Get_Variable_Value();
         break;
     case 2:
-        MotionState.torque = Serialport_Object.Get_Variable_Value();
+        Chassis_State.target_omega = Serialport_Object.Get_Variable_Value();
         break;
     default:
         break;

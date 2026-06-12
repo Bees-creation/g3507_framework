@@ -7,9 +7,9 @@
 #include "tsk_config.h"
 
 /** 在此处引用任务函数头文件 -- begin -- */
-#include "Tasks/Display/tsk_display.h"
 #include "Tasks/Sensor/tsk_sensor.h"
 #include "Tasks/Motion/tsk_motion.h"
+#include "Tasks/Display/tsk_display.h"
 /** 在此处引用任务函数头文件 --  end  -- */
 
 static void _Block_Task_Entry(void) {
@@ -70,9 +70,9 @@ uint8_t Register_Periodic_Task(uint32_t _period, Task_Function_t _func,
 
 void Task_Init(void) {
     /** 在此处执行初始化操作 -- begin -- */
-    Display_Init();
     Sensor_Init();
     Motion_Init();
+    Display_Init();
     /** 在此处执行初始化操作 --  end  -- */
 
     // 板载LED灯闪烁任务以500ms为周期调用
@@ -89,9 +89,9 @@ void Task_Init(void) {
         Error_Handler();
     }
 
-    // if (Register_Periodic_Task(10, Motion_Task, 128, 2) != STATUS_DONE) {
-    //     Error_Handler();
-    // }
+    if (Register_Periodic_Task(10, Motion_Task, 128, 2) != STATUS_DONE) {
+        Error_Handler();
+    }
     /** 在此处注册任务函数 --  end  -- */
 
     // 阻塞式任务函数以10ms为周期调用

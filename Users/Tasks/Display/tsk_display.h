@@ -9,12 +9,6 @@
 
 #include "Device/Serialport/dvc_serialport.h"
 
-typedef struct Struct {
-    float angle;
-    float omega;
-    float torque;
-} Struct_Motion_State;
-
 /**
  * @brief 信息显示初始化
  */

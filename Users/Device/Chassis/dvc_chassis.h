@@ -40,12 +40,39 @@ public:
     }
 
     /**
-     * @brief 设定逆时针旋转速度
+     * @brief 设定目标逆时针旋转速度
      * 
-     * @param __Target_Omega 逆时针旋转速度
+     * @param __Target_Omega 目标逆时针旋转速度
      */
     inline void Set_Target_Omega(float __Target_Omega) {
         Target_Omega = __Target_Omega;
+    }
+
+    /**
+     * @brief 获取当前右行速度
+     * 
+     * @retval Now_Velocity_X 当前右行速度
+     */
+    inline float Get_Now_Velocity_X(void) {
+        return Now_Velocity_X;
+    }
+
+    /**
+     * @brief 获取当前前进速度
+     * 
+     * @retval Now_Velocity_Y 当前前进速度
+     */
+    inline float Get_Now_Velocity_Y(void) {
+        return Now_Velocity_Y;
+    }
+
+    /**
+     * @brief 获取当前逆时针旋转速度
+     * 
+     * @retval Now_Omega 当前逆时针旋转速度
+     */
+    inline float Get_Now_Omega(void) {
+        return Now_Omega;
     }
 
 protected:

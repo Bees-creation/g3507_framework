@@ -7,7 +7,7 @@
 #ifndef DVC_INFRAREDSENSOR_H
 #define DVC_INFRAREDSENSOR_H
 
-#include "Drivers/BSP/drv_bsp.h"
+#include "Drivers/GPIO/drv_gpio.h"
 
 enum Enum_IRS_Detect_Type {
     IRS_Detect_Type_Positive = 0,// 1表示白色

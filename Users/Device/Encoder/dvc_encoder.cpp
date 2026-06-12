@@ -8,11 +8,11 @@
 
 void Class_Encoder::Init(const float &__D_T, const float &__Scale) {
     D_T = __D_T;
-    Scale = __Scale / (2 * PI);
+    Scale = __Scale;
 }
 
 void Class_Encoder::TIM_Update_PeriodElapsedCallback() {
-    Angle = Count / Scale;
+    Angle = Count / Scale * (2 * PI);
     Omega = Angle / D_T;
     Count = 0;
 }

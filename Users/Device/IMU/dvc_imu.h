@@ -16,9 +16,9 @@ typedef struct Struct_Accelerometer{
 } Struct_Accelerometer;
 
 typedef struct Struct_Gyroscope{
-    float x_gyro;// 俯仰加速度，向上为正
-    float y_gyro;// 翻滚加速度，向右为正
-    float z_gyro;// 偏航加速度，向左为正
+    float x_gyro;// 俯仰加速度，向上拉升为正
+    float y_gyro;// 翻滚加速度，向右翻滚为正
+    float z_gyro;// 偏航加速度，向左旋转为正
 } Struct_Gyroscope;
 
 typedef struct Struct_Euler {

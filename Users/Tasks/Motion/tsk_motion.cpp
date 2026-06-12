@@ -10,6 +10,11 @@
 #include "Tasks/Sensor/tsk_sensor.h"
 /* 在此处引用任务函数头文件 --  end  -- */
 
+Struct_QEI_State QEI_State_Left = {0};
+Struct_QEI_State QEI_State_Right = {0};
+
+Struct_Chassis_State Chassis_State = {0};
+
 Class_Brush_Motor_Drv8701e Left_Motor;
 Class_Brush_Motor_Drv8701e Right_Motor;
 Class_Differential_Chassis chassis(Left_Motor, Right_Motor, CHASSIS_WHEEL_TRACK, CHASSIS_WHEEL_RADIUS);
@@ -71,31 +76,43 @@ void Motion_Trace(void)
     }
 
     int16_t diff = DIFF_KP * bias;
-    chassis.Set_Target_Velocity_Y(0);
-    chassis.Set_Target_Omega(diff);
+    chassis.Set_Target_Velocity_Y(500);
+    chassis.Set_Target_Omega(0);
 }
 
 void Motion_Init(void) {
     // PID初始化
-    Left_Motor.Omega_Loop.Init(CHASSIS_LEFT_PID_OMEGA_KP, CHASSIS_LEFT_PID_OMEGA_KI, 0.0f, 0.0f, CHASSIS_LEFT_PID_OMEGA_I_OUT_MAX, CHASSIS_LEFT_PID_OMEGA_OUT_MAX);
-    Right_Motor.Omega_Loop.Init(CHASSIS_RIGHT_PID_OMEGA_KP, CHASSIS_RIGHT_PID_OMEGA_KI, 0.0f, 0.0f, CHASSIS_RIGHT_PID_OMEGA_I_OUT_MAX, CHASSIS_RIGHT_PID_OMEGA_OUT_MAX);
+    Left_Motor.Omega_Loop.Init(CHASSIS_LEFT_PID_OMEGA_KP, CHASSIS_LEFT_PID_OMEGA_KI, 0.0f, 0.0f, CHASSIS_LEFT_PID_OMEGA_I_OUT_MAX, CHASSIS_LEFT_PID_OMEGA_OUT_MAX, 0.01);
+    Right_Motor.Omega_Loop.Init(CHASSIS_RIGHT_PID_OMEGA_KP, CHASSIS_RIGHT_PID_OMEGA_KI, 0.0f, 0.0f, CHASSIS_RIGHT_PID_OMEGA_I_OUT_MAX, CHASSIS_RIGHT_PID_OMEGA_OUT_MAX, 0.01);
     // 编码器初始化
-    Left_Motor.QEI.Init(0.01, CHASSIS_WHEEL_QEI_SCALE, Encoder_Count_Method_A_UP_AB, MOTOR_LEFT_QEI_PHASE_A_PORT, MOTOR_LEFT_QEI_PHASE_A_PIN, MOTOR_LEFT_QEI_PHASE_B_PORT, MOTOR_LEFT_QEI_PHASE_B_PIN);
-    Right_Motor.QEI.Init(0.01, CHASSIS_WHEEL_QEI_SCALE, Encoder_Count_Method_A_UP_AB, MOTOR_RIGHT_QEI_PHASE_A_PORT, MOTOR_RIGHT_QEI_PHASE_A_PIN, MOTOR_RIGHT_QEI_PHASE_B_PORT, MOTOR_RIGHT_QEI_PHASE_B_PIN);
+    Left_Motor.QEI.Init(0.01, CHASSIS_WHEEL_QEI_SCALE, Encoder_Count_Method_A_UP_BA, MOTOR_LEFT_QEI_PHASE_A_PORT, MOTOR_LEFT_QEI_PHASE_A_PIN, MOTOR_LEFT_QEI_PHASE_B_PORT, MOTOR_LEFT_QEI_PHASE_B_PIN);
+    Right_Motor.QEI.Init(0.01, CHASSIS_WHEEL_QEI_SCALE, Encoder_Count_Method_A_UP_BA, MOTOR_RIGHT_QEI_PHASE_A_PORT, MOTOR_RIGHT_QEI_PHASE_A_PIN, MOTOR_RIGHT_QEI_PHASE_B_PORT, MOTOR_RIGHT_QEI_PHASE_B_PIN);
     // 电机初始化
-    Left_Motor.Init((TIMER_INST*)TIMA0, TIMER_CHANNEL_0, Motor_Control_Method_Omega, Motor_Control_Algorithm_PID, MOTOR_LEFT_DIRECTION_PORT, MOTOR_LEFT_DIRECTION_PIN);
-    Right_Motor.Init((TIMER_INST*)TIMA0, TIMER_CHANNEL_1, Motor_Control_Method_Omega, Motor_Control_Algorithm_PID, MOTOR_RIGHT_DIRECTION_PORT, MOTOR_RIGHT_DIRECTION_PIN);
+    Left_Motor.Init((TIMER_INST*)TIMG8, TIMER_CHANNEL_0, Motor_Control_Method_Omega, Motor_Control_Algorithm_PID, MOTOR_LEFT_DIRECTION_PORT, MOTOR_LEFT_DIRECTION_PIN);
+    Right_Motor.Init((TIMER_INST*)TIMG8, TIMER_CHANNEL_1, Motor_Control_Method_Omega, Motor_Control_Algorithm_PID, MOTOR_RIGHT_DIRECTION_PORT, MOTOR_RIGHT_DIRECTION_PIN);
 }
 
 void Motion_Task(void) {
     Motion_Trace();
     chassis.TIM_Update_PeriodElapsedCallback();
+    QEI_State_Left.now_angle = Left_Motor.QEI.Get_Angle();
+    QEI_State_Left.now_omega = Left_Motor.QEI.Get_Omega();
+    QEI_State_Right.now_angle = Right_Motor.QEI.Get_Angle();
+    QEI_State_Right.now_omega = Right_Motor.QEI.Get_Omega();
 }
 
-void GPIOB_PIN23_IRQHandler (void) {
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+void GPIOB_PIN2_IRQHandler(void) {
+    Right_Motor.QEI.GPIO_InterruptCallback();
+}
+
+void GPIOB_PIN23_IRQHandler(void) {
     Left_Motor.QEI.GPIO_InterruptCallback();
 }
 
-void GPIOB_PIN2_IRQHandler (void) {
-    Right_Motor.QEI.GPIO_InterruptCallback();
+#ifdef __cplusplus
 }
+#endif

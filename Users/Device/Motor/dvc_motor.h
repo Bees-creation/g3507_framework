@@ -7,7 +7,7 @@
 #ifndef DVC_MOTOR_H
 #define DVC_MOTOR_H
 
-#include "Drivers/BSP/drv_bsp.h"
+#include "Drivers/GPIO/drv_gpio.h"
 #include "Algorithm/PID/alg_pid.h"
 #include "Device/Encoder/dvc_encoder.h"
 
@@ -24,7 +24,7 @@ enum Enum_Motor_Control_Algorithm {
 /**
  * @brief 电机基类
  * 
- * @note 电机逆时针旋转为正
+ * @note 从电机转轴方向看进去，旋转方向符合右手螺旋定则，即顺时针旋转为正向
  */
 class Class_Motor {
 public:

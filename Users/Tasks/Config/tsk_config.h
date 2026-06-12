@@ -8,7 +8,7 @@
 #define TSK_CONFIG_H
 
 #include "Drivers/FreeRTOS/drv_os.h"
-#include "Drivers/BSP/drv_bsp.h"
+#include "Drivers/GPIO/drv_gpio.h"
 
 // 最大阻塞式任务数量
 #define MAX_BLOCK_TASK_NUM      10
