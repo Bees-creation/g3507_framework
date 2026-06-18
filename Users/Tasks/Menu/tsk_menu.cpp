@@ -228,7 +228,7 @@ void Menu_Item_Task(void) {
         _Task_Status[i] = Task_Status[i];
     }
     taskEXIT_CRITICAL();
-    
+
     for (int i = 0; i < TASK_NUMS; i++) {
         if (_Task_Status[i] && Task_List[i] != NULL) {
             Task_List[i]();

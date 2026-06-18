@@ -34,7 +34,7 @@ typedef enum Enum_LCD_Direction {
 #define BROWN 0xBC40 // 棕色
 #define BRRED 0xFC07 // 棕红色
 #define GRAY 0x8430 // 灰色
-#define DARKBLUE 0x01CF	// 深蓝色
+#define DARKBLUE 0x01CF // 深蓝色
 #define LIGHTBLUE 0x7D7C // 浅蓝色
 #define GRAYBLUE 0x5458 // 灰蓝色
 #define LIGHTGREEN 0x841F // 浅绿色

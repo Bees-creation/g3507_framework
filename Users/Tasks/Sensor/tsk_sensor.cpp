@@ -30,7 +30,7 @@ void Sensor_Task(void) {
     for (int i = 0; i < 8; i++) {
         Channels[i] = IRS.Get_Channels()[i];
     }
-    
+
     // IMU模块任务
     Yaw = IMU.Get_Yaw();
     GyroZ = IMU.Get_GyroZ();

@@ -170,9 +170,9 @@ protected:
     float K_F = 0.0f;
 
     // 积分限幅，0为不限制
-    float I_Out_Max = 0;
+    float I_Out_Max = 0.0f;
     // 输出限幅，0为不限制
-    float Out_Max = 0;
+    float Out_Max = 0.0f;
 
     // 变速积分全速阈值，0为不限制
     float I_Variable_Speed_A = 0.0f;

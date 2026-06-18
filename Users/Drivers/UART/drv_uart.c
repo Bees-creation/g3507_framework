@@ -42,12 +42,14 @@ void UART_DMA_Init(
         UART0_Manage_Object.Rx_Buffer_Length = Rx_Buffer_Length;
         if (DMA_Rx_CH_CHAN_ID != -1) {
             UART0_Manage_Object.DMA_Rx_Manage_Object = DMA_Init(DMAx, DMA_Rx_CH_CHAN_ID, (uint32_t)&UARTx->RXDATA, (uint32_t)&UART0_Manage_Object.Rx_Buffer, UART_BUFFER_SIZE);
-        } else {
+        }
+        else {
             UART0_Manage_Object.DMA_Rx_Manage_Object = NULL;
         }
         if (DMA_Tx_CH_CHAN_ID != -1) {
             UART0_Manage_Object.DMA_Tx_Manage_Object = DMA_Init(DMAx, DMA_Tx_CH_CHAN_ID, (uint32_t)&UART0_Manage_Object.Tx_Buffer, (uint32_t)&UARTx->TXDATA, UART_BUFFER_SIZE);
-        } else {
+        }
+        else {
             UART0_Manage_Object.DMA_Tx_Manage_Object = NULL;
         }
         NVIC_Enable_IT(UART0_IT);
@@ -60,12 +62,14 @@ void UART_DMA_Init(
         UART1_Manage_Object.Rx_Buffer_Length = Rx_Buffer_Length;
         if (DMA_Rx_CH_CHAN_ID != -1) {
             UART1_Manage_Object.DMA_Rx_Manage_Object = DMA_Init(DMAx, DMA_Rx_CH_CHAN_ID, (uint32_t)&UARTx->RXDATA, (uint32_t)&UART1_Manage_Object.Rx_Buffer, UART_BUFFER_SIZE);
-        } else {
+        }
+        else {
             UART1_Manage_Object.DMA_Rx_Manage_Object = NULL;
         }
         if (DMA_Tx_CH_CHAN_ID != -1) {
             UART1_Manage_Object.DMA_Tx_Manage_Object = DMA_Init(DMAx, DMA_Tx_CH_CHAN_ID, (uint32_t)&UART1_Manage_Object.Tx_Buffer, (uint32_t)&UARTx->TXDATA, UART_BUFFER_SIZE);
-        } else {
+        }
+        else {
             UART1_Manage_Object.DMA_Tx_Manage_Object = NULL;
         }
         NVIC_Enable_IT(UART1_IT);
@@ -78,12 +82,14 @@ void UART_DMA_Init(
         UART2_Manage_Object.Rx_Buffer_Length = Rx_Buffer_Length;
         if (DMA_Rx_CH_CHAN_ID != -1) {
             UART2_Manage_Object.DMA_Rx_Manage_Object = DMA_Init(DMAx, DMA_Rx_CH_CHAN_ID, (uint32_t)&UARTx->RXDATA, (uint32_t)&UART2_Manage_Object.Rx_Buffer, UART_BUFFER_SIZE);
-        } else {
+        }
+        else {
             UART2_Manage_Object.DMA_Rx_Manage_Object = NULL;
         }
         if (DMA_Tx_CH_CHAN_ID != -1) {
             UART2_Manage_Object.DMA_Tx_Manage_Object = DMA_Init(DMAx, DMA_Tx_CH_CHAN_ID, (uint32_t)&UART2_Manage_Object.Tx_Buffer, (uint32_t)&UARTx->TXDATA, UART_BUFFER_SIZE);
-        } else {
+        }
+        else {
             UART2_Manage_Object.DMA_Tx_Manage_Object = NULL;
         }
         NVIC_Enable_IT(UART2_IT);
@@ -96,12 +102,14 @@ void UART_DMA_Init(
         UART3_Manage_Object.Rx_Buffer_Length = Rx_Buffer_Length;
         if (DMA_Rx_CH_CHAN_ID != -1) {
             UART3_Manage_Object.DMA_Rx_Manage_Object = DMA_Init(DMAx, DMA_Rx_CH_CHAN_ID, (uint32_t)&UARTx->RXDATA, (uint32_t)&UART3_Manage_Object.Rx_Buffer, UART_BUFFER_SIZE);
-        } else {
+        }
+        else {
             UART3_Manage_Object.DMA_Rx_Manage_Object = NULL;
         }
         if (DMA_Tx_CH_CHAN_ID != -1) {
             UART3_Manage_Object.DMA_Tx_Manage_Object = DMA_Init(DMAx, DMA_Tx_CH_CHAN_ID, (uint32_t)&UART3_Manage_Object.Tx_Buffer, (uint32_t)&UARTx->TXDATA, UART_BUFFER_SIZE);
-        } else {
+        }
+        else {
             UART3_Manage_Object.DMA_Tx_Manage_Object = NULL;
         }
         NVIC_Enable_IT(UART3_IT);
@@ -114,12 +122,14 @@ void UART_DMA_Init(
         UART4_Manage_Object.Rx_Buffer_Length = Rx_Buffer_Length;
         if (DMA_Rx_CH_CHAN_ID != -1) {
             UART4_Manage_Object.DMA_Rx_Manage_Object = DMA_Init(DMAx, DMA_Rx_CH_CHAN_ID, (uint32_t)&UARTx->RXDATA, (uint32_t)&UART4_Manage_Object.Rx_Buffer, UART_BUFFER_SIZE);
-        } else {
+        }
+        else {
             UART4_Manage_Object.DMA_Rx_Manage_Object = NULL;
         }
         if (DMA_Tx_CH_CHAN_ID != -1) {
             UART4_Manage_Object.DMA_Tx_Manage_Object = DMA_Init(DMAx, DMA_Tx_CH_CHAN_ID, (uint32_t)&UART4_Manage_Object.Tx_Buffer, (uint32_t)&UARTx->TXDATA, UART_BUFFER_SIZE);
-        } else {
+        }
+        else {
             UART4_Manage_Object.DMA_Tx_Manage_Object = NULL;
         }
         NVIC_Enable_IT(UART4_IT);
@@ -132,12 +142,14 @@ void UART_DMA_Init(
         UART5_Manage_Object.Rx_Buffer_Length = Rx_Buffer_Length;
         if (DMA_Rx_CH_CHAN_ID != -1) {
             UART5_Manage_Object.DMA_Rx_Manage_Object = DMA_Init(DMAx, DMA_Rx_CH_CHAN_ID, (uint32_t)&UARTx->RXDATA, (uint32_t)&UART5_Manage_Object.Rx_Buffer, UART_BUFFER_SIZE);
-        } else {
+        }
+        else {
             UART5_Manage_Object.DMA_Rx_Manage_Object = NULL;
         }
         if (DMA_Tx_CH_CHAN_ID != -1) {
             UART5_Manage_Object.DMA_Tx_Manage_Object = DMA_Init(DMAx, DMA_Tx_CH_CHAN_ID, (uint32_t)&UART5_Manage_Object.Tx_Buffer, (uint32_t)&UARTx->TXDATA, UART_BUFFER_SIZE);
-        } else {
+        }
+        else {
             UART5_Manage_Object.DMA_Tx_Manage_Object = NULL;
         }
         NVIC_Enable_IT(UART5_IT);
@@ -150,12 +162,14 @@ void UART_DMA_Init(
         UART6_Manage_Object.Rx_Buffer_Length = Rx_Buffer_Length;
         if (DMA_Rx_CH_CHAN_ID != -1) {
             UART6_Manage_Object.DMA_Rx_Manage_Object = DMA_Init(DMAx, DMA_Rx_CH_CHAN_ID, (uint32_t)&UARTx->RXDATA, (uint32_t)&UART6_Manage_Object.Rx_Buffer, UART_BUFFER_SIZE);
-        } else {
+        }
+        else {
             UART6_Manage_Object.DMA_Rx_Manage_Object = NULL;
         }
         if (DMA_Tx_CH_CHAN_ID != -1) {
             UART6_Manage_Object.DMA_Tx_Manage_Object = DMA_Init(DMAx, DMA_Tx_CH_CHAN_ID, (uint32_t)&UART6_Manage_Object.Tx_Buffer, (uint32_t)&UARTx->TXDATA, UART_BUFFER_SIZE);
-        } else {
+        }
+        else {
             UART6_Manage_Object.DMA_Tx_Manage_Object = NULL;
         }
         NVIC_Enable_IT(UART6_IT);
@@ -168,12 +182,14 @@ void UART_DMA_Init(
         UART7_Manage_Object.Rx_Buffer_Length = Rx_Buffer_Length;
         if (DMA_Tx_CH_CHAN_ID != -1) {
             UART7_Manage_Object.DMA_Rx_Manage_Object = DMA_Init(DMAx, DMA_Rx_CH_CHAN_ID, (uint32_t)&UARTx->RXDATA, (uint32_t)&UART7_Manage_Object.Rx_Buffer, UART_BUFFER_SIZE);
-        } else {
+        }
+        else {
             UART7_Manage_Object.DMA_Rx_Manage_Object = NULL;
         }
         if (DMA_Tx_CH_CHAN_ID != -1) {
             UART7_Manage_Object.DMA_Tx_Manage_Object = DMA_Init(DMAx, DMA_Tx_CH_CHAN_ID, (uint32_t)&UART7_Manage_Object.Tx_Buffer, (uint32_t)&UARTx->TXDATA, UART_BUFFER_SIZE);
-        } else {
+        }
+        else {
             UART7_Manage_Object.DMA_Tx_Manage_Object = NULL;
         }
         NVIC_Enable_IT(UART7_IT);

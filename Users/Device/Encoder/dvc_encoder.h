@@ -61,7 +61,7 @@ enum Enum_Software_Encoder_Count_Method {
 /**
  * @brief 软件正交编码器
  */
-class Class_Software_QEI:public Class_Encoder {
+class Class_Software_QEI : public Class_Encoder {
 public:
     /**
      * @brief 编码器初始化

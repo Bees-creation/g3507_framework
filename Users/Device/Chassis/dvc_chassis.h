@@ -96,7 +96,7 @@ protected:
  * 
  * @tparam Motor 电机类
  */
-class Class_Differential_Chassis:public Class_Chassis {
+class Class_Differential_Chassis : public Class_Chassis {
 public:
     Class_Motor &Left_Motor;
     Class_Motor &Right_Motor;

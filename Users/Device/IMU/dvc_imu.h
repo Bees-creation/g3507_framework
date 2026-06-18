@@ -53,13 +53,13 @@ protected:
 /**
  * @brief 串口陀螺仪
  */
-class Class_IMU_Mspm0g3507:public Class_IMU {
+class Class_IMU_Mspm0g3507 : public Class_IMU {
 public:
     Struct_UART_Manage_Object &UART_Manage_Object;
 
     Class_IMU_Mspm0g3507(Struct_UART_Manage_Object &__UART_Manage_Object) : UART_Manage_Object(__UART_Manage_Object) {
         
-    };
+    }
 
     void Init(void);
 

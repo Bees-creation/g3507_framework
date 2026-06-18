@@ -32,13 +32,13 @@ static inline void GPIOB_IRQHandler(void) {
  */
 void GROUP1_IRQHandler(void) {
     switch (DL_Interrupt_getPendingGroup(DL_INTERRUPT_GROUP_1)) {
-    case DL_INTERRUPT_GROUP1_IIDX_GPIOA:
-        GPIOA_IRQHandler();
-        break;
-    case DL_INTERRUPT_GROUP1_IIDX_GPIOB:
-        GPIOB_IRQHandler();
-        break;
-    default:
-        break;
+        case DL_INTERRUPT_GROUP1_IIDX_GPIOA:
+            GPIOA_IRQHandler();
+            break;
+        case DL_INTERRUPT_GROUP1_IIDX_GPIOB:
+            GPIOB_IRQHandler();
+            break;
+        default:
+            break;
     }
 }

@@ -131,7 +131,7 @@ protected:
 /**
  * @brief 使用drv8701e驱动芯片的有刷电机
  */
-class Class_Brush_Motor_Drv8701e:public Class_Motor {
+class Class_Brush_Motor_Drv8701e : public Class_Motor {
 public:
     Class_Software_QEI QEI;
 
@@ -174,7 +174,7 @@ protected:
     GPIO_PORT *Direction_Port;
     GPIO_PIN Direction_Pin;
     // 一次滤波系数
-    float Filter = 0.5;
+    float Filter = 0.5f;
 };
 
 #endif /* DVC_MOTOR_H */

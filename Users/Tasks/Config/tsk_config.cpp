@@ -74,7 +74,8 @@ uint8_t Register_Periodic_Task(uint32_t _period, Task_Function_t _func,
     if (ret == pdPASS) {
         _periodic_task_count++;
         return STATUS_DONE;
-    } else {
+    }
+    else {
         // 内存不足
         task->Available = 0;
         return STATUS_OOM;

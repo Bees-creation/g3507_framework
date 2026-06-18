@@ -35,7 +35,8 @@ void Class_Key::Detect(void) {
                 if (Key_Counter >= Key_Debounce_Threshold) { // 连续采样都为按下，确认按下
                     Key_State = Key_State_PRESSED_SHORT;
                 }
-            } else {
+            }
+            else {
                 Key_State = Key_State_RELEASED; // 抖动，回到释放态
                 Key_Counter = 0;
             }
@@ -48,7 +49,8 @@ void Class_Key::Detect(void) {
                     Key_State = Key_State_PRESSED_LONG;
                     Key_Counter = 0;
                 }
-            } else {
+            }
+            else {
                 Key_State = Key_State_RELEASED_DEBOUNCE;
                 Key_Counter = 0;
             }
@@ -75,10 +77,12 @@ void Class_Key::Detect(void) {
                         Key_Long_Function();
                     }
                 }
-            } else {// 抖动，回到按下态
+            }
+            else {// 抖动，回到按下态
                 if (Key_Long_Pressed) {
                     Key_State = Key_State_PRESSED_LONG;
-                } else {
+                }
+                else {
                     Key_State = Key_State_PRESSED_SHORT;
                 }
                 Key_Counter = 0;

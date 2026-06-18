@@ -29,12 +29,14 @@ void SPI_DMA_Init(SPI_INST *SPIx, DMA_INST *DMAx, int8_t DMA_Rx_CH_CHAN_ID, int8
         SPI0_Manage_Object.Callback_Function = Callback_Function;
         if (DMA_Rx_CH_CHAN_ID != -1) {
             SPI0_Manage_Object.DMA_Rx_Manage_Object = DMA_Init(DMAx, DMA_Rx_CH_CHAN_ID, (uint32_t)&SPIx->RXDATA, (uint32_t)&SPI0_Manage_Object.Rx_Buffer, 0);
-        } else {
+        }
+        else {
             SPI0_Manage_Object.DMA_Rx_Manage_Object = NULL;
         }
         if (DMA_Tx_CH_CHAN_ID != -1) {
             SPI0_Manage_Object.DMA_Tx_Manage_Object = DMA_Init(DMAx, DMA_Tx_CH_CHAN_ID, (uint32_t)&SPI0_Manage_Object.Tx_Buffer, (uint32_t)&SPIx->TXDATA, 0);
-        } else {
+        }
+        else {
             SPI0_Manage_Object.DMA_Tx_Manage_Object = NULL;
         }
         NVIC_Enable_IT(SPI0_IT);
@@ -49,12 +51,14 @@ void SPI_DMA_Init(SPI_INST *SPIx, DMA_INST *DMAx, int8_t DMA_Rx_CH_CHAN_ID, int8
         SPI1_Manage_Object.Callback_Function = Callback_Function;
         if (DMA_Rx_CH_CHAN_ID != -1) {
             SPI1_Manage_Object.DMA_Rx_Manage_Object = DMA_Init(DMAx, DMA_Rx_CH_CHAN_ID, (uint32_t)&SPIx->RXDATA, (uint32_t)&SPI1_Manage_Object.Rx_Buffer, 0);
-        } else {
+        }
+        else {
             SPI1_Manage_Object.DMA_Rx_Manage_Object = NULL;
         }
         if (DMA_Tx_CH_CHAN_ID != -1) {
             SPI1_Manage_Object.DMA_Tx_Manage_Object = DMA_Init(DMAx, DMA_Tx_CH_CHAN_ID, (uint32_t)&SPI1_Manage_Object.Tx_Buffer, (uint32_t)&SPIx->TXDATA, 0);
-        } else {
+        }
+        else {
             SPI1_Manage_Object.DMA_Tx_Manage_Object = NULL;
         }
         NVIC_Enable_IT(SPI1_IT);
@@ -69,12 +73,14 @@ void SPI_DMA_Init(SPI_INST *SPIx, DMA_INST *DMAx, int8_t DMA_Rx_CH_CHAN_ID, int8
         SPI2_Manage_Object.Callback_Function = Callback_Function;
         if (DMA_Rx_CH_CHAN_ID != -1) {
             SPI2_Manage_Object.DMA_Rx_Manage_Object = DMA_Init(DMAx, DMA_Rx_CH_CHAN_ID, (uint32_t)&SPIx->RXDATA, (uint32_t)&SPI2_Manage_Object.Rx_Buffer, 0);
-        } else {
+        }
+        else {
             SPI2_Manage_Object.DMA_Rx_Manage_Object = NULL;
         }
         if (DMA_Tx_CH_CHAN_ID != -1) {
             SPI2_Manage_Object.DMA_Tx_Manage_Object = DMA_Init(DMAx, DMA_Tx_CH_CHAN_ID, (uint32_t)&SPI2_Manage_Object.Tx_Buffer, (uint32_t)&SPIx->TXDATA, 0);
-        } else {
+        }
+        else {
             SPI2_Manage_Object.DMA_Tx_Manage_Object = NULL;
         }
         NVIC_Enable_IT(SPI2_IT);
@@ -89,12 +95,14 @@ void SPI_DMA_Init(SPI_INST *SPIx, DMA_INST *DMAx, int8_t DMA_Rx_CH_CHAN_ID, int8
         SPI3_Manage_Object.Callback_Function = Callback_Function;
         if (DMA_Rx_CH_CHAN_ID != -1) {
             SPI3_Manage_Object.DMA_Rx_Manage_Object = DMA_Init(DMAx, DMA_Rx_CH_CHAN_ID, (uint32_t)&SPIx->RXDATA, (uint32_t)&SPI3_Manage_Object.Rx_Buffer, 0);
-        } else {
+        }
+        else {
             SPI3_Manage_Object.DMA_Rx_Manage_Object = NULL;
         }
         if (DMA_Tx_CH_CHAN_ID != -1) {
             SPI3_Manage_Object.DMA_Tx_Manage_Object = DMA_Init(DMAx, DMA_Tx_CH_CHAN_ID, (uint32_t)&SPI3_Manage_Object.Tx_Buffer, (uint32_t)&SPIx->TXDATA, 0);
-        } else {
+        }
+        else {
             SPI3_Manage_Object.DMA_Tx_Manage_Object = NULL;
         }
         NVIC_Enable_IT(SPI3_IT);
@@ -169,7 +177,8 @@ uint8_t SPI_Exchange_Data(SPI_INST *SPIx, uint8_t *TxData, uint8_t *RxData, uint
                     SPI0_Manage_Object.Rx_Buffer = RxData;
                     SPI0_Manage_Object.Rx_Length = Length;
                     DMA_Receive_Data(SPI0_Manage_Object.DMA_Rx_Manage_Object, RxData, Length);
-                } else {
+                }
+                else {
                     SPI0_Manage_Object.Rx_Length = 0;
                 }
                 return DMA_Send_Data(SPI0_Manage_Object.DMA_Tx_Manage_Object, TxData, Length);
@@ -184,7 +193,8 @@ uint8_t SPI_Exchange_Data(SPI_INST *SPIx, uint8_t *TxData, uint8_t *RxData, uint
                     SPI1_Manage_Object.Rx_Buffer = RxData;
                     SPI1_Manage_Object.Rx_Length = Length;
                     DMA_Receive_Data(SPI1_Manage_Object.DMA_Rx_Manage_Object, RxData, Length);
-                } else {
+                }
+                else {
                     SPI1_Manage_Object.Rx_Length = 0;
                 }
                 return DMA_Send_Data(SPI1_Manage_Object.DMA_Tx_Manage_Object, TxData, Length);
@@ -199,7 +209,8 @@ uint8_t SPI_Exchange_Data(SPI_INST *SPIx, uint8_t *TxData, uint8_t *RxData, uint
                     SPI2_Manage_Object.Rx_Buffer = RxData;
                     SPI2_Manage_Object.Rx_Length = Length;
                     DMA_Receive_Data(SPI2_Manage_Object.DMA_Rx_Manage_Object, RxData, Length);
-                } else {
+                }
+                else {
                     SPI2_Manage_Object.Rx_Length = 0;
                 }
                 return DMA_Send_Data(SPI2_Manage_Object.DMA_Tx_Manage_Object, TxData, Length);
@@ -214,7 +225,8 @@ uint8_t SPI_Exchange_Data(SPI_INST *SPIx, uint8_t *TxData, uint8_t *RxData, uint
                     SPI3_Manage_Object.Rx_Buffer = RxData;
                     SPI3_Manage_Object.Rx_Length = Length;
                     DMA_Receive_Data(SPI3_Manage_Object.DMA_Rx_Manage_Object, RxData, Length);
-                } else {
+                }
+                else {
                     SPI3_Manage_Object.Rx_Length = 0;
                 }
                 return DMA_Send_Data(SPI3_Manage_Object.DMA_Tx_Manage_Object, TxData, Length);
