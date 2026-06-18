@@ -10,95 +10,132 @@
 #include "Tasks/Sensor/tsk_sensor.h"
 /* 在此处引用任务函数头文件 --  end  -- */
 
-Struct_QEI_State QEI_State_Left = {0};
-Struct_QEI_State QEI_State_Right = {0};
+Struct_Motor_State Motor_State_Left = {0};
+Struct_Motor_State Motor_State_Right = {0};
 
 Struct_Chassis_State Chassis_State = {0};
+
+Struct_Records_State Records_State;
 
 Class_Brush_Motor_Drv8701e Left_Motor;
 Class_Brush_Motor_Drv8701e Right_Motor;
 Class_Differential_Chassis chassis(Left_Motor, Right_Motor, CHASSIS_WHEEL_TRACK, CHASSIS_WHEEL_RADIUS);
 
-enum Enum_Car_Operation_Type {
-    Car_Operation_Type_FORWARD = 0,
-    Car_Operation_Type_LEFT,
-    Car_Operation_Type_RIGHT,
-    Car_Operation_Type_LOST,
+enum Enum_Car_State {
+    Car_State_IDLE = 0,// 空闲
+    Car_State_FORWARD,// 循迹行驶
+    Car_State_LEFT,// 左转
+    Car_State_RIGHT,// 右转
+    Car_State_LOST,// 丢失轨迹
 };
 
-void Motion_Trace(void)
-{
-    Enum_Car_Operation_Type operation = Car_Operation_Type_FORWARD;
-    // 计算轨迹偏离
-    const int8_t weight[8] = {-7, -5, -3, -1, 1, 3, 5, 7};
-    int8_t bias = 0;
-    for (int i = 0; i < 8; i++) {
-        if (Channels[i] == 1) {
-            bias += weight[i];
-        }
-    }
+void Motion_Trace(float speed) {
+    Enum_Car_State state = Car_State_IDLE;
 
-    // 计算轨迹状态
-    uint8_t status = 0;
+    uint8_t status = 0;// 轨迹状态
+    const int8_t weight[8] = {-7, -5, -3, -1, 1, 3, 5, 7};
+    static int16_t last_bias = 0;
+    int8_t bias = 0;// 轨迹偏离
     for (int i = 0; i < 8; i++) {
         if (Channels[i] == 1) {
-            status |= 0x01;
+            status |= 0x01;// 计算轨迹状态
+            bias += weight[i];// 计算轨迹偏离
         }
         status = (status << 1);
     }
+    bias *= DIFF_KP;
 
-    uint8_t lost = 0;
-    switch (status)
-    {
+    // 目标旋转角度
+    static float Target_Yaw;
+
+    // 判断轨迹状态
+    switch (status) {
     case 0xF0:// 11110000
-    case 0xF4:// 11111000
+    case 0xF8:// 11111000
+    case 0xFC:// 11111100
     /* 左转 */
-        operation = Car_Operation_Type_LEFT;
+        if (state == Car_State_FORWARD) {
+            Target_Yaw = Yaw - 90.0f;// 设定转向角度
+            state = Car_State_LEFT;// 如果正在循迹行驶，那么进入左转状态
+        }
         break;
     case 0x0F:// 00001111
     case 0x1F:// 00011111
+    case 0x3F:// 00111111
     /* 右转 */
-        operation = Car_Operation_Type_RIGHT;
+        if (state == Car_State_FORWARD) {
+            Target_Yaw = Yaw + 90.0f;// 设定转向角度
+            state = Car_State_RIGHT;// 如果正在循迹行驶，那么进入右转状态
+        }
         break;
     case 0x00:// 00000000
     /* 丢失轨迹处理 */
-        operation = Car_Operation_Type_LOST;
+        if (state == Car_State_FORWARD) {
+            state = Car_State_LOST;// 如果正在循迹行驶，那么进入丢失轨迹状态
+        }
         break;
     default:
+        if (state == Car_State_IDLE || state == Car_State_LOST) {
+            state = Car_State_FORWARD;// 如果正在空闲或丢失轨迹，那么进入循迹行驶状态
+        }
         break;
     }
 
-    static int16_t last_bias = 0;
-    if (operation == Car_Operation_Type_LOST) {
-        bias = last_bias; // 使用上次有效误差
-    } else {
-        last_bias = bias;
+    switch (state) {
+        case Car_State_IDLE:
+            chassis.Set_Target_Velocity_Y(0);
+            chassis.Set_Target_Omega(0);
+            break;
+        case Car_State_FORWARD:
+            chassis.Set_Target_Velocity_Y(speed);
+            chassis.Set_Target_Omega(bias);
+            break;
+        case Car_State_LEFT:
+            chassis.Set_Target_Velocity_Y(100);
+            chassis.Set_Target_Omega(-0.4f);
+            if (Math_Abs(Target_Yaw - Yaw) < 5) {
+                state = Car_State_IDLE;
+            }
+            break;
+        case Car_State_RIGHT:
+            chassis.Set_Target_Velocity_Y(100);
+            chassis.Set_Target_Omega(0.4f);
+            if (Math_Abs(Target_Yaw - Yaw) < 5) {
+                state = Car_State_IDLE;
+            }
+            break;
+        case Car_State_LOST:
+            chassis.Set_Target_Velocity_Y(-50);
+            chassis.Set_Target_Omega(0);
+            break;
     }
+}
 
-    int16_t diff = DIFF_KP * bias;
-    chassis.Set_Target_Velocity_Y(500);
+void Motion_Stop(void) {
+    chassis.Set_Target_Velocity_Y(0);
     chassis.Set_Target_Omega(0);
 }
 
 void Motion_Init(void) {
     // PID初始化
-    Left_Motor.Omega_Loop.Init(CHASSIS_LEFT_PID_OMEGA_KP, CHASSIS_LEFT_PID_OMEGA_KI, 0.0f, 0.0f, CHASSIS_LEFT_PID_OMEGA_I_OUT_MAX, CHASSIS_LEFT_PID_OMEGA_OUT_MAX, 0.01);
-    Right_Motor.Omega_Loop.Init(CHASSIS_RIGHT_PID_OMEGA_KP, CHASSIS_RIGHT_PID_OMEGA_KI, 0.0f, 0.0f, CHASSIS_RIGHT_PID_OMEGA_I_OUT_MAX, CHASSIS_RIGHT_PID_OMEGA_OUT_MAX, 0.01);
+    Left_Motor.Omega_Loop.Init(CHASSIS_LEFT_PID_OMEGA_KP, CHASSIS_LEFT_PID_OMEGA_KI, CHASSIS_LEFT_PID_OMEGA_KD, 0.0f, CHASSIS_LEFT_PID_OMEGA_I_OUT_MAX, CHASSIS_LEFT_PID_OMEGA_OUT_MAX, DELTA_TIME);
+    Right_Motor.Omega_Loop.Init(CHASSIS_RIGHT_PID_OMEGA_KP, CHASSIS_RIGHT_PID_OMEGA_KI, CHASSIS_RIGHT_PID_OMEGA_KD, 0.0f, CHASSIS_RIGHT_PID_OMEGA_I_OUT_MAX, CHASSIS_RIGHT_PID_OMEGA_OUT_MAX, DELTA_TIME);
     // 编码器初始化
-    Left_Motor.QEI.Init(0.01, CHASSIS_WHEEL_QEI_SCALE, Encoder_Count_Method_A_UP_BA, MOTOR_LEFT_QEI_PHASE_A_PORT, MOTOR_LEFT_QEI_PHASE_A_PIN, MOTOR_LEFT_QEI_PHASE_B_PORT, MOTOR_LEFT_QEI_PHASE_B_PIN);
-    Right_Motor.QEI.Init(0.01, CHASSIS_WHEEL_QEI_SCALE, Encoder_Count_Method_A_UP_BA, MOTOR_RIGHT_QEI_PHASE_A_PORT, MOTOR_RIGHT_QEI_PHASE_A_PIN, MOTOR_RIGHT_QEI_PHASE_B_PORT, MOTOR_RIGHT_QEI_PHASE_B_PIN);
+    Left_Motor.QEI.Init(DELTA_TIME, CHASSIS_WHEEL_QEI_SCALE, Encoder_Count_Method_A_UP_BA, MOTOR_LEFT_QEI_PHASE_A_PORT, MOTOR_LEFT_QEI_PHASE_A_PIN, MOTOR_LEFT_QEI_PHASE_B_PORT, MOTOR_LEFT_QEI_PHASE_B_PIN);
+    Right_Motor.QEI.Init(DELTA_TIME, CHASSIS_WHEEL_QEI_SCALE, Encoder_Count_Method_A_UP_BA, MOTOR_RIGHT_QEI_PHASE_A_PORT, MOTOR_RIGHT_QEI_PHASE_A_PIN, MOTOR_RIGHT_QEI_PHASE_B_PORT, MOTOR_RIGHT_QEI_PHASE_B_PIN);
     // 电机初始化
-    Left_Motor.Init((TIMER_INST*)TIMG8, TIMER_CHANNEL_0, Motor_Control_Method_Omega, Motor_Control_Algorithm_PID, MOTOR_LEFT_DIRECTION_PORT, MOTOR_LEFT_DIRECTION_PIN);
-    Right_Motor.Init((TIMER_INST*)TIMG8, TIMER_CHANNEL_1, Motor_Control_Method_Omega, Motor_Control_Algorithm_PID, MOTOR_RIGHT_DIRECTION_PORT, MOTOR_RIGHT_DIRECTION_PIN);
+    Left_Motor.Init((TIMER_INST*)TIMG8, TIMER_CHANNEL_0, Motor_Control_Method_Omega, Motor_Control_Algorithm_PID, MOTOR_LEFT_DIRECTION_PORT, MOTOR_LEFT_DIRECTION_PIN, DELTA_TIME, FILTER);
+    Right_Motor.Init((TIMER_INST*)TIMG8, TIMER_CHANNEL_1, Motor_Control_Method_Omega, Motor_Control_Algorithm_PID, MOTOR_RIGHT_DIRECTION_PORT, MOTOR_RIGHT_DIRECTION_PIN, DELTA_TIME, FILTER);
 }
 
 void Motion_Task(void) {
-    Motion_Trace();
     chassis.TIM_Update_PeriodElapsedCallback();
-    QEI_State_Left.now_angle = Left_Motor.QEI.Get_Angle();
-    QEI_State_Left.now_omega = Left_Motor.QEI.Get_Omega();
-    QEI_State_Right.now_angle = Right_Motor.QEI.Get_Angle();
-    QEI_State_Right.now_omega = Right_Motor.QEI.Get_Omega();
+    // Motor_State_Left.now_angle = Left_Motor.Get_Angle();
+    // Motor_State_Left.now_omega = Left_Motor.Get_Omega();
+    // Motor_State_Right.now_angle = Right_Motor.Get_Angle();
+    // Motor_State_Right.now_omega = Right_Motor.Get_Omega();
+    // Chassis_State.now_speed = chassis.Get_Now_Velocity_Y();
+    // Chassis_State.now_omega = chassis.Get_Now_Omega();
 }
 
 #ifdef __cplusplus

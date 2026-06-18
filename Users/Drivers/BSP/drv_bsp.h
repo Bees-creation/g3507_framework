@@ -9,12 +9,17 @@
 
 #include "ti_msp_dl_config.h"
 
+/**
+ * @brief 获取列表元素个数
+ */
+#define sizeoflist(list) (sizeof(list) / sizeof(list[0]))
+
 #define SYS_FREQ (CPUCLK_FREQ)
 #define SYS_US (SYS_FREQ / 1000000)
 
 /**
  * @brief 系统状态宏定义
- * 
+ *
  * @def STATUS_READY 就绪
  * @def STATUS_DONE 完成
  * @def STATUS_BUSY 忙碌
@@ -40,14 +45,14 @@
 #endif
 #ifndef STATUS_DISABLE
 #define STATUS_DISABLE 0
-#endif 
+#endif
 #ifndef STATUS_ENABLE
 #define STATUS_ENABLE 1
-#endif 
+#endif
 
 /**
  * @brief 中断向量宏定义
- * 
+ *
  * @typedef NVIC_IRQ
  */
 /* TIMER */
@@ -82,7 +87,7 @@
 
 /**
  * @brief 定时器宏定义
- * 
+ *
  * @typedef TIMER_INST
  */
 #if defined TIMG0_BASE
@@ -109,7 +114,7 @@
 
 /**
  * @brief 定时器输入输出通道
- * 
+ *
  * @typedef TIMER_CHANNEL
  */
 #define TIMER_CHANNEL_0 DL_TIMER_CC_0_INDEX
@@ -122,15 +127,24 @@
 /**
  * @brief 类型定义
  */
+/* NVIC */
 typedef IRQn_Type NVIC_IRQ;
-typedef GPIO_Regs GPIO_PORT;
-typedef uint32_t GPIO_PIN;
+/* TIMER */
 typedef GPTIMER_Regs TIMER_INST;
 typedef DL_TIMER_CC_INDEX TIMER_CHANNEL;
+/* DMA */
+typedef DMA_Regs DMA_INST;
+/* UART */
+typedef UART_Regs UART_INST;
+/* SPI */
+typedef SPI_Regs SPI_INST;
+/* GPIO */
+typedef GPIO_Regs GPIO_PORT;
+typedef uint32_t GPIO_PIN;
 
 /**
  * @brief 延时函数
- * 
+ *
  * @param us 微秒
  */
 static inline void Sys_Delay(uint32_t us) {
@@ -139,7 +153,7 @@ static inline void Sys_Delay(uint32_t us) {
 
 /**
  * @brief 使能中断向量
- * 
+ *
  * @param IRQn 中断向量名
  */
 static inline void NVIC_Enable_IT(NVIC_IRQ IRQn) {
@@ -148,7 +162,7 @@ static inline void NVIC_Enable_IT(NVIC_IRQ IRQn) {
 
 /**
  * @brief TIM启动定时器
- * 
+ *
  * @param TIMx 定时器
  */
 static inline void TIM_Start_Counter(TIMER_INST *TIMx) {
@@ -157,7 +171,7 @@ static inline void TIM_Start_Counter(TIMER_INST *TIMx) {
 
 /**
  * @brief TIM停用定时器
- * 
+ *
  * @param TIMx 定时器
  */
 static inline void TIM_Stop_Counter(TIMER_INST *TIMx) {
@@ -166,7 +180,7 @@ static inline void TIM_Stop_Counter(TIMER_INST *TIMx) {
 
 /**
  * @brief TIM设置比较值
- * 
+ *
  * @param TIMx 定时器
  * @param value 值
  * @param Channel 定时器通道

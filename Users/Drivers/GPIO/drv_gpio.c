@@ -31,8 +31,7 @@ static inline void GPIOB_IRQHandler(void) {
  * @brief 系统级GPIO中断函数
  */
 void GROUP1_IRQHandler(void) {
-    switch (DL_Interrupt_getPendingGroup(DL_INTERRUPT_GROUP_1))
-    {
+    switch (DL_Interrupt_getPendingGroup(DL_INTERRUPT_GROUP_1)) {
     case DL_INTERRUPT_GROUP1_IIDX_GPIOA:
         GPIOA_IRQHandler();
         break;

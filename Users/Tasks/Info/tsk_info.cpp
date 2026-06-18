@@ -4,7 +4,7 @@
  * @copyright https://github.com/Bees-creation (c) 2026
  */
 
-#include "tsk_display.h"
+#include "tsk_info.h"
 
 /* 在此处引用任务函数头文件 -- begin -- */
 #include "Tasks/Sensor/tsk_sensor.h"
@@ -20,14 +20,14 @@ const char Serialport_Rx_Variable_Assignment_List[][SERIALPORT_RX_VARIABLE_ASSIG
     "target_omega",
 };
 
-void Display_Init(void) {
+void Info_Init(void) {
     UART_DMA_Init(UART1, Serialport_Callback, UART_BUFFER_SIZE, DMA, DMA_CHANNEL_0, DMA_CHANNEL_1);
     Serialport_Object.Init(UART1, 3, (const char**)Serialport_Rx_Variable_Assignment_List, Serialport_Data_Type_JUSTFLOAT, 0x00, 0x00);
 }
 
-void Display_Task(void) {
+void Info_Task(void) {
     // 设置数据
-    Serialport_Object.Set_Data(4, &QEI_State_Left.now_angle, &QEI_State_Left.now_omega, &QEI_State_Right.now_angle, &QEI_State_Right.now_omega);
+    // Serialport_Object.Set_Data(4, &Motor_State_Left.now_angle, &Motor_State_Left.now_omega, &Motor_State_Right.now_angle, &Motor_State_Right.now_omega);
     // Serialport_Object.Set_Data(2, &Chassis_State.now_speed, &Chassis_State.now_omega);
     // TIM定时器中断检查串口接收空闲状态，并重启DMA接收
     Serialport_Object.TIM_Read_PeriodElapsedCallback();

@@ -15,7 +15,7 @@
 
 /**
  * @brief 串口工具单条指令长度
- * 
+ *
  * @note 接收指令字典的类型为char* [SERIALPORT_RX_VARIABLE_ASSIGNMENT_LENGTH]
  */
 #define SERIALPORT_RX_VARIABLE_ASSIGNMENT_LENGTH (50)
@@ -44,7 +44,7 @@ class Class_Serialport {
 public:
     /**
      * @brief 串口工具初始化
-     * 
+     *
      * @param UARTx 绑定的UART
      * @param __Serialport_Rx_Variable_Assignment_Num 接收指令字典的数量
      * @param __Serialport_Rx_Variable_Assignment_List 接收指令字典列表指针
@@ -52,25 +52,25 @@ public:
      * @param __Frame_Header 帧头标识符，0x00为无帧头
      * @param __Frame_Trailer 帧尾标识符，0x00为无帧尾
      */
-    void Init(UART_Regs *UARTx, uint8_t __Serialport_Rx_Variable_Assignment_Num = 0, const char **__Serialport_Rx_Variable_Assignment_List = NULL, Enum_Serialport_Data_Type __Serialport_Tx_Data_Type = Serialport_Data_Type_FLOAT, uint8_t __Frame_Header = 0x00, uint8_t __Frame_Trailer = 0x00);
+    void Init(UART_INST *UARTx, uint8_t __Serialport_Rx_Variable_Assignment_Num = 0, const char **__Serialport_Rx_Variable_Assignment_List = NULL, Enum_Serialport_Data_Type __Serialport_Tx_Data_Type = Serialport_Data_Type_FLOAT, uint8_t __Frame_Header = 0x00, uint8_t __Frame_Trailer = 0x00);
 
     /**
      * @brief 获取当前接收的指令在指令字典中的编号
-     * 
+     *
      * @retval 当前接收的指令在指令字典中的编号
      */
     int8_t Get_Variable_Index();
 
     /**
      * @brief 获取当前接收的指令在指令字典中的值
-     * 
+     *
      * @retval 当前接收的指令在指令字典中的值
      */
     double Get_Variable_Value();
 
     /**
      * @brief 添加被发送的数据到成员变量Data[]
-     * 
+     *
      * @param Number 添加的数据数量
      * @param ... 每个数据的指针，最多12个
      */
@@ -124,14 +124,14 @@ protected:
 
     /**
      * @brief 判断指令变量名
-     * 
+     *
      * @retval 指令数值位置的指针，也就是"variable=value#"中v的坐标
      */
     uint8_t Judge_Variable_Name();
 
     /**
      * @brief 判断指令变量数值
-     */ 
+     */
     void Judge_Variable_Value(int flag);
 
     /**

@@ -33,7 +33,7 @@
 /* 允许的最小堆栈大小 */
 #define configMINIMAL_STACK_SIZE ((unsigned short) 128)     // 最小任务栈（128字*4字节/字=512字节）
 #define configMAX_TASK_NAME_LEN (12)                        // 任务名最大长度
-#define configTOTAL_HEAP_SIZE ((size_t)(3 * 1024))          // 堆总大小（3KB*1024字节/KB）
+#define configTOTAL_HEAP_SIZE ((size_t)(8 * 1024))          // 堆总大小（8KB*1024字节/KB）
 
 /*
  * 如果使用静态任务分配（以及计时器，configUSE_TIMERS = 1）

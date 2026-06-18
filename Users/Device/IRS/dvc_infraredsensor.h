@@ -41,4 +41,4 @@ protected:
     GPIO_PIN Data_Pin;
 };
 
-#endif
+#endif /* DVC_INFRAREDSENSOR_H */

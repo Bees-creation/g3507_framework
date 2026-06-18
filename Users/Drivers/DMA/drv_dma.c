@@ -34,7 +34,7 @@ Struct_DMA_Manage_Object DMA_CH7_Manage_Object;
 #endif
 
 Struct_DMA_Manage_Object* DMA_Init(
-    DMA_Regs *DMAx,
+    DMA_INST *DMAx,
     uint8_t DMA_CH_CHAN_ID,
     uint32_t Src_Address,
     uint32_t Dest_Address,

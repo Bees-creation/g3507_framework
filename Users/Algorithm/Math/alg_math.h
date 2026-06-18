@@ -2,7 +2,7 @@
  * @brief 数学库
  * @date 2026/5/26
  * @ref 参考代码 https://github.com/yssickjgd/robowalker_train
- * @copyright USTC-RoboWalker (c) 2023
+ * @copyright https://github.com/Bees-creation (c) 2026
  */
 
 #ifndef ALG_MATH_H
@@ -71,6 +71,65 @@ Type Math_Abs(Type *x) {
     return ((*x > 0) ? *x : -*x);
 }
 
-#endif /* ALG_MATH_H */
+/**
+ * @brief 归一化线性映射
+ *
+ * @tparam Type 类型
+ * @param x 传入数据，范围[Min,Max]
+ * @param Min 最小值
+ * @param Max 最大值
+ * @retval [Min,Max]映射到[0,1]，超出范围的x会被限幅
+ */
+template<typename Type>
+Type Math_Normalization(Type x, Type Min, Type Max) {
+    return (Math_Constrain(x, Min, Max) - Min) / (Max - Min);
+}
 
-/************************ COPYRIGHT(C) USTC-ROBOWALKER **************************/
+/**
+ * @brief 逆归一化线性映射
+ *
+ * @tparam Type 类型
+ * @param x 归一化数据，范围[0,1]
+ * @param Min 最小值
+ * @param Max 最大值
+ * @retval [0,1]映射到[Min,Max]，超出范围的x会被限幅
+ */
+template<typename Type>
+Type Math_Denormalization(Type x, Type Min, Type Max) {
+    return Math_Constrain(x * (Max - Min) + Min, Min, Max);
+}
+
+/**
+ * @brief 归一化线性插值
+ *
+ * @tparam Type 类型
+ * @param x1 起始值
+ * @param x2 终点值
+ * @param t 时间
+ * @param T 周期
+ * @retval Type xt输出值
+ */
+template<typename Type>
+Type Math_Linear_Interpolation(Type x1, Type x2, Type t, Type T) {
+    t = Math_Normalization(t, (Type)0, T);
+    return Math_Denormalization(t, x1, x2);
+}
+
+/**
+ * @brief 归一化五次多项式插值
+ *
+ * @tparam Type 类型
+ * @param x1 起始值
+ * @param x2 终点值
+ * @param t 时间
+ * @param T 周期
+ * @retval Type xt输出值
+ */
+template<typename Type>
+Type Math_Quintic_Polynomial_Interpolation(Type x1, Type x2, Type t, Type T) {
+    t = Math_Normalization(t, (Type)0, T);
+    float y = 6 * pow(t, 5) - 15 * pow(t, 4) + 10 * pow(t, 3);
+    return Math_Denormalization(y, x1, x2);
+}
+
+#endif /* ALG_MATH_H */

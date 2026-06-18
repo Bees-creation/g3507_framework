@@ -4,24 +4,24 @@
  * @copyright https://github.com/Bees-creation (c) 2026
  */
 
-#ifndef TSK_DISPLAY_H
-#define TSK_DISPLAY_H
+#ifndef TSK_INFO_H
+#define TSK_INFO_H
 
 #include "Device/Serialport/dvc_serialport.h"
 
 /**
  * @brief 信息显示初始化
  */
-void Display_Init(void);
+void Info_Init(void);
 
 /**
  * @brief 信息显示任务
  */
-void Display_Task(void);
+void Info_Task(void);
 
 /**
  * @brief 串口工具回调函数
  */
 void Serialport_Callback(uint8_t *Buffer, uint16_t Length);
 
-#endif /* TSK_DISPLAY_H */
+#endif /* TSK_INFO_H */

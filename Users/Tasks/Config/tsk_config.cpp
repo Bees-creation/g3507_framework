@@ -9,13 +9,26 @@
 /** 在此处引用任务函数头文件 -- begin -- */
 #include "Tasks/Sensor/tsk_sensor.h"
 #include "Tasks/Motion/tsk_motion.h"
-#include "Tasks/Display/tsk_display.h"
+#include "Tasks/Info/tsk_info.h"
+#include "Tasks/Menu/tsk_menu.h"
 /** 在此处引用任务函数头文件 --  end  -- */
 
 static void _Block_Task_Entry(void) {
-    for (int i = 0; i < MAX_BLOCK_TASK_NUM; i++) {
-        if (Block_Task_List[i] != NULL) {
-            Block_Task_List[i]();
+    Task_Function_t _Task_List[MAX_BLOCK_TASK_NUM];
+    uint8_t _Task_Num;
+
+    // 临界区内复制有效列表
+    taskENTER_CRITICAL();
+    _Task_Num = _block_task_count;
+    for (int i = 0; i < _Task_Num; i++) {
+        _Task_List[i] = Block_Task_List[i];
+    }
+    taskEXIT_CRITICAL();
+
+    // 临界区外执行有效列表
+    for (int i = 0; i < _Task_Num; i++) {
+        if (_Task_List[i] != NULL) {
+            _Task_List[i]();
         }
     }
 }
@@ -50,10 +63,10 @@ uint8_t Register_Periodic_Task(uint32_t _period, Task_Function_t _func,
     task->Available = 1;
 
     BaseType_t ret = xTaskCreate(
-        _Periodic_Task_Entry,        // 统一的入口
-        "Task",                     // 任务名
-        stack_size,                 // 外部指定栈大小
-        (void*)task,                // 传递参数，就是任务管理结构体指针
+        _Periodic_Task_Entry, // 统一的入口
+        "Task", // 任务名
+        stack_size, // 外部指定栈大小
+        (void*)task, // 传递参数，就是任务管理结构体指针
         priority,
         &task->Task_Handle
     );
@@ -68,20 +81,74 @@ uint8_t Register_Periodic_Task(uint32_t _period, Task_Function_t _func,
     }
 }
 
+uint8_t Unregister_Block_Task(Task_Function_t _func) {
+    uint8_t result = STATUS_ERROR;
+
+    taskENTER_CRITICAL();
+    for (int i = 0; i < _block_task_count; i++) {
+        if (Block_Task_List[i] == _func) {
+            // 将后续元素前移，覆盖待删除项
+            for (int j = i; j < _block_task_count - 1; j++) {
+                Block_Task_List[j] = Block_Task_List[j + 1];
+            }
+            _block_task_count--;
+            result = STATUS_DONE;
+            break;
+        }
+    }
+    taskEXIT_CRITICAL();
+
+    return result;
+}
+
+uint8_t Unregister_Periodic_Task(Task_Function_t _func) {
+    uint8_t result = STATUS_ERROR;
+    TaskHandle_t task_handle = NULL;
+    uint8_t index = 0;
+
+    taskENTER_CRITICAL();
+    for (int i = 0; i < _periodic_task_count; i++) {
+        if (Period_Task_List[i].Task_Function == _func &&
+            Period_Task_List[i].Available == 1) {
+            task_handle = Period_Task_List[i].Task_Handle;
+            index = i;
+            result = STATUS_DONE;
+            break;
+        }
+    }
+
+    if (result == STATUS_DONE) {
+        // 将后续元素前移，覆盖待删除项
+        for (int j = index; j < _periodic_task_count - 1; j++) {
+            Period_Task_List[j] = Period_Task_List[j + 1];
+        }
+        _periodic_task_count--;
+    }
+    taskEXIT_CRITICAL();
+
+    // 临界区外删除任务，允许删除自身
+    if (task_handle != NULL) {
+        vTaskDelete(task_handle);
+    }
+
+    return result;
+}
+
 void Task_Init(void) {
     /** 在此处执行初始化操作 -- begin -- */
     Sensor_Init();
     Motion_Init();
-    Display_Init();
+    Info_Init();
+    Menu_Init();
     /** 在此处执行初始化操作 --  end  -- */
 
     // 板载LED灯闪烁任务以500ms为周期调用
-    if (Register_Periodic_Task(500, Debug_Task, 64, 2) != STATUS_DONE) {
+    if (Register_Periodic_Task(500, Debug_Task, 64, 3) != STATUS_DONE) {
         Error_Handler();
     }
 
     /** 在此处注册任务函数 -- begin -- */
-    if (Register_Block_Task(Display_Task) != STATUS_DONE) {
+    if (Register_Block_Task(Info_Task) != STATUS_DONE) {
         Error_Handler();
     }
 
@@ -90,6 +157,14 @@ void Task_Init(void) {
     }
 
     if (Register_Periodic_Task(10, Motion_Task, 128, 2) != STATUS_DONE) {
+        Error_Handler();
+    }
+
+    if (Register_Periodic_Task(10, Menu_Item_Task, 384, 2) != STATUS_DONE) {
+        Error_Handler();
+    }
+
+    if (Register_Periodic_Task(10, Menu_Task, 256, 3) != STATUS_DONE) {
         Error_Handler();
     }
     /** 在此处注册任务函数 --  end  -- */

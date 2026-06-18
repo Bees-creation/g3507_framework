@@ -91,4 +91,4 @@ protected:
     void performCaliBias(void);
 };
 
-#endif
+#endif /* DVC_IMU_H */

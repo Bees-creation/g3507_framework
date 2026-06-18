@@ -16,14 +16,14 @@ class Class_PID {
 public:
     /**
      * @brief PID初始化
-     * 
+     *
      * @param PID参数
      */
     void Init(const float &__K_P, const float &__K_I, const float &__K_D, const float &__K_F = 0.0f, const float &__I_Out_Max = 0.0f, const float &__Out_Max = 0.0f, const float &__D_T = 0.001f, const float &__Dead_Zone = 0.0f, const float &__I_Variable_Speed_A = 0.0f, const float &__I_Variable_Speed_B = 0.0f, const float &__I_Separate_Threshold = 0.0f);
 
     /**
      * @brief 获取误差积分值
-     * 
+     *
      * @retval 误差积分值
      */
     inline float Get_Integral_Error() const {
@@ -32,7 +32,7 @@ public:
 
     /**
      * @brief 获取输出值
-     * 
+     *
      * @retval 输出值
      */
     inline float Get_Out() const {
@@ -40,89 +40,71 @@ public:
     }
 
     /**
-     * @brief 设定比例系数
-     * 
-     * @param __K_P 比例系数
+     * @brief 获取比例系数引用
      */
-    inline void Set_K_P(const float &__K_P) {
-        K_P = __K_P;
+    inline float &Get_K_P(void) {
+        return K_P;
     }
 
     /**
-     * @brief 设定积分系数
-     * 
-     * @param __K_I 积分系数
+     * @brief 获取积分系数引用
      */
-    inline void Set_K_I(const float &__K_I) {
-        K_I = __K_I;
+    inline float &Get_K_I(void) {
+        return K_I;
     }
 
     /**
-     * @brief 设定微分系数
-     * 
-     * @param __K_D 微分系数
+     * @brief 获取微分系数引用
      */
-    inline void Set_K_D(const float &__K_D) {
-        K_D = __K_D;
+    inline float &Get_K_D(void) {
+        return K_D;
     }
 
     /**
-     * @brief 设定前馈系数
-     * 
-     * @param __K_F 前馈系数
+     * @brief 获取前馈系数引用
      */
-    inline void Set_K_F(const float &__K_F) {
-        K_F = __K_F;
+    inline float &Get_K_F(void) {
+        return K_F;
     }
 
     /**
-     * @brief 设定积分限幅
-     * 
-     * @param __I_Out_Max 积分限幅
+     * @brief 获取积分限幅引用
      */
-    inline void Set_I_Out_Max(const float &__I_Out_Max) {
-        I_Out_Max = __I_Out_Max;
+    inline float &Get_I_Out_Max(void) {
+        return I_Out_Max;
     }
 
     /**
-     * @brief 设定输出限幅
-     * 
-     * @param __Out_Max 输出限幅
+     * @brief 获取输出限幅引用
      */
-    inline void Set_Out_Max(const float &__Out_Max) {
-        Out_Max = __Out_Max;
+    inline float &Get_Out_Max(void) {
+        return Out_Max;
     }
 
     /**
-     * @brief 设定变速积分全速阈值
-     * 
-     * @param __I_Variable_Speed_A 变速积分全速阈值
+     * @brief 获取变速积分全速阈值引用
      */
-    inline void Set_I_Variable_Speed_A(const float &__I_Variable_Speed_A) {
-        I_Variable_Speed_A = __I_Variable_Speed_A;
+    inline float &Get_I_Variable_Speed_A(void) {
+        return I_Variable_Speed_A;
     }
 
     /**
-     * @brief 设定变速积分启动阈值
-     * 
-     * @param __I_Variable_Speed_B 变速积分启动阈值
+     * @brief 获取变速积分启动阈值引用
      */
-    inline void Set_I_Variable_Speed_B(const float &__I_Variable_Speed_B) {
-        I_Variable_Speed_B = __I_Variable_Speed_B;
+    inline float &Get_I_Variable_Speed_B(void) {
+        return I_Variable_Speed_B;
     }
 
     /**
-     * @brief 设定积分分离阈值
-     * 
-     * @param __I_Separate_Threshold 积分分离阈值
+     * @brief 获取积分分离阈值引用
      */
-    inline void Set_I_Separate_Threshold(const float &__I_Separate_Threshold) {
-        I_Separate_Threshold = __I_Separate_Threshold;
+    inline float &Get_I_Separate_Threshold(void) {
+        return I_Separate_Threshold;
     }
 
     /**
      * @brief 设定目标值
-     * 
+     *
      * @param __Target 目标值
      */
     inline void Set_Target(const float &__Target) {
@@ -131,7 +113,7 @@ public:
 
     /**
      * @brief 设定当前值
-     * 
+     *
      * @param __Now 当前值
      */
     inline void Set_Now(const float &__Now) {
@@ -140,7 +122,7 @@ public:
 
     /**
      * @brief 设定误差积分值
-     * 
+     *
      * @param __Integral_Error 误差积分值
      */
     inline void Set_Integral_Error(const float &__Integral_Error) {

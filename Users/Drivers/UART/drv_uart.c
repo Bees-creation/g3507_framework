@@ -33,8 +33,8 @@ Struct_UART_Manage_Object UART7_Manage_Object = {0};
 #endif
 
 void UART_DMA_Init(
-    UART_Regs *UARTx, UART_Callback Callback_Function, uint16_t Rx_Buffer_Length,
-    DMA_Regs *DMAx, int8_t DMA_Rx_CH_CHAN_ID, int8_t DMA_Tx_CH_CHAN_ID) {
+    UART_INST *UARTx, UART_Callback Callback_Function, uint16_t Rx_Buffer_Length,
+    DMA_INST *DMAx, int8_t DMA_Rx_CH_CHAN_ID, int8_t DMA_Tx_CH_CHAN_ID) {
 #if defined UART0
     if (UARTx == UART0) {
         UART0_Manage_Object.UART_Handler = UARTx;
@@ -181,13 +181,13 @@ void UART_DMA_Init(
 #endif
 }
 
-uint8_t _UART_Send_Blocking(UART_Regs *UARTx, uint8_t *pData, uint16_t Length, uint16_t Timeout) {
+uint8_t _UART_Send_Blocking(UART_INST *UARTx, uint8_t *pData, uint16_t Length, uint16_t Timeout) {
     int time = 0;
     for (int i = 0; i < Length; i++) {
         time = 0;
         while (!DL_UART_transmitDataCheck(UARTx, pData[i])) {
             Sys_Delay(10);
-            time+=10;
+            time += 10;
             if (time > Timeout) {
                 return STATUS_ERROR;
             }
@@ -196,7 +196,7 @@ uint8_t _UART_Send_Blocking(UART_Regs *UARTx, uint8_t *pData, uint16_t Length, u
     return STATUS_DONE;
 }
 
-uint8_t UART_Send_Data(UART_Regs *UARTx, uint8_t *pData, uint16_t Length) {
+uint8_t UART_Send_Data(UART_INST *UARTx, uint8_t *pData, uint16_t Length) {
     if ((pData == NULL) || (Length == 0U)) {
         return STATUS_ERROR;
     }
@@ -272,13 +272,13 @@ uint8_t UART_Send_Data(UART_Regs *UARTx, uint8_t *pData, uint16_t Length) {
     return _UART_Send_Blocking(UARTx, pData, Length, 20000);
 }
 
-uint8_t _UART_Receive_Blocking(UART_Regs *UARTx, uint8_t *pData, uint16_t Length, uint16_t Timeout) {
+uint8_t _UART_Receive_Blocking(UART_INST *UARTx, uint8_t *pData, uint16_t Length, uint16_t Timeout) {
     int time = 0;
     for (int i = 0; i < Length; i++) {
         time = 0;
         while (!DL_UART_receiveDataCheck(UARTx, &pData[i])) {
             Sys_Delay(10);
-            time+=10;
+            time += 10;
             if (time > Timeout) {
                 return STATUS_ERROR;
             }
@@ -287,7 +287,7 @@ uint8_t _UART_Receive_Blocking(UART_Regs *UARTx, uint8_t *pData, uint16_t Length
     return STATUS_DONE;
 }
 
-uint8_t UART_Receive_Data(UART_Regs *UARTx, uint8_t *pData, uint16_t Length) {
+uint8_t UART_Receive_Data(UART_INST *UARTx, uint8_t *pData, uint16_t Length) {
     if ((pData == NULL) || (Length == 0U)) {
         return STATUS_ERROR;
     }
@@ -350,7 +350,7 @@ uint8_t UART_Receive_Data(UART_Regs *UARTx, uint8_t *pData, uint16_t Length) {
     return _UART_Receive_Blocking(UARTx, pData, Length, 20000);
 }
 
-__WEAK void UART_IRQHandler(UART_Regs *UARTx) {
+__WEAK void UART_IRQHandler(UART_INST *UARTx) {
 #if defined UART0
     if (UARTx == UART0) {
         switch (DL_UART_Main_getPendingInterrupt(UART0)) {

@@ -75,6 +75,18 @@ uint8_t Register_Periodic_Task(uint32_t _period, Task_Function_t _func,
                            uint16_t stack_size, UBaseType_t priority);
 
 /**
+ * @brief 阻塞式任务注销函数
+ * @param _func 任务函数指针
+ */
+uint8_t Unregister_Block_Task(Task_Function_t _func);
+
+/**
+ * @brief 并发式任务注销函数
+ * @param _func 任务函数指针
+ */
+uint8_t Unregister_Periodic_Task(Task_Function_t _func);
+
+/**
  * @brief 全局初始化函数
  */
 void Task_Init(void);

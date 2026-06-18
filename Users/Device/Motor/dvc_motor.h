@@ -9,6 +9,7 @@
 
 #include "Drivers/GPIO/drv_gpio.h"
 #include "Algorithm/PID/alg_pid.h"
+#include "Algorithm/Filter/alg_filter.h"
 #include "Device/Encoder/dvc_encoder.h"
 
 enum Enum_Motor_Control_Method {
@@ -84,6 +85,15 @@ public:
     }
 
     /**
+     * @brief 获取角度
+     * 
+     * @retval 角度
+     */
+    inline float Get_Angle(void) {
+        return Now_Angle;
+    }
+
+    /**
      * @brief 获取角速度
      * 
      * @retval 角速度
@@ -97,6 +107,9 @@ protected:
     Enum_Motor_Control_Method Control_Method = Motor_Control_Method_Omega;
     // 控制算法
     Enum_Motor_Control_Algorithm Control_Algorithm = Motor_Control_Algorithm_PID;
+
+    // 更新周期
+    float D_T;
 
     // 当前角度
     float Now_Angle = 0.0f;
@@ -130,7 +143,7 @@ public:
      * @param __Control_Method 控制方法
      * @param __Control_Algorithm 控制算法
      */
-    void Init(TIMER_INST *TIMx, TIMER_CHANNEL __Channel, const Enum_Motor_Control_Method &__Control_Method, const Enum_Motor_Control_Algorithm &__Control_Algorithm, GPIO_PORT *__Direction_Port, GPIO_PIN __Direction_Pin);
+    void Init(TIMER_INST *TIMx, TIMER_CHANNEL __Channel, const Enum_Motor_Control_Method &__Control_Method, const Enum_Motor_Control_Algorithm &__Control_Algorithm, GPIO_PORT *__Direction_Port, GPIO_PIN __Direction_Pin, float __D_T, float __Filter = 0.5f);
 
     /**
      * @brief 启动电机
@@ -160,6 +173,8 @@ protected:
     // 方向控制引脚
     GPIO_PORT *Direction_Port;
     GPIO_PIN Direction_Pin;
+    // 一次滤波系数
+    float Filter = 0.5;
 };
 
 #endif /* DVC_MOTOR_H */

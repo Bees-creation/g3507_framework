@@ -7,7 +7,7 @@
 
 #include "dvc_serialport.h"
 
-void Class_Serialport::Init(UART_Regs *UARTx, uint8_t __Serialport_Rx_Variable_Assignment_Num, const char **__Serialport_Rx_Variable_Assignment_List, Enum_Serialport_Data_Type __Serialport_Tx_Data_Type, uint8_t __Frame_Header, uint8_t __Frame_Trailer) {
+void Class_Serialport::Init(UART_INST *UARTx, uint8_t __Serialport_Rx_Variable_Assignment_Num, const char **__Serialport_Rx_Variable_Assignment_List, Enum_Serialport_Data_Type __Serialport_Tx_Data_Type, uint8_t __Frame_Header, uint8_t __Frame_Trailer) {
 #if defined UART0
     if (UARTx == UART0) {
         UART_Manage_Object = &UART0_Manage_Object;

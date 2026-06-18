@@ -101,7 +101,7 @@ public:
     Class_Motor &Left_Motor;
     Class_Motor &Right_Motor;
 
-    Class_Differential_Chassis(Class_Motor &__Left_Motor, Class_Motor &__Right_Motor, float __Wheel_Track, float __Wheel_Radius)
+    Class_Differential_Chassis(Class_Motor &__Left_Motor, Class_Motor &__Right_Motor, const float &__Wheel_Track, const float &__Wheel_Radius)
     : Left_Motor(__Left_Motor), Right_Motor(__Right_Motor), Wheel_Track(__Wheel_Track), Wheel_Radius(__Wheel_Radius) {
     }
 

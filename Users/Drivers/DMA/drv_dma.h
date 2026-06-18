@@ -7,8 +7,6 @@
 #ifndef DRV_DMA_H
 #define DRV_DMA_H
 
-#include "ti_msp_dl_config.h"
-
 #include "Drivers/BSP/drv_bsp.h"
 
 /**
@@ -21,7 +19,7 @@
  * @param Busy 空闲状态，0为空闲，1为忙碌
  */
 typedef struct Struct_DMA_Manage_Object {
-    DMA_Regs *DMA_Handler;
+    DMA_INST *DMA_Handler;
     uint32_t Src_Address;
     uint32_t Dest_Address;
     uint16_t Package_Size;
@@ -81,7 +79,7 @@ extern "C" {
  * @retval DMA传输处理结构体指针
  */
 Struct_DMA_Manage_Object* DMA_Init(
-    DMA_Regs *DMAx,
+    DMA_INST *DMAx,
     uint8_t DMA_CH_CHAN_ID,
     uint32_t Src_Address,
     uint32_t Dest_Address,

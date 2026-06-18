@@ -25,8 +25,7 @@ void Class_8C_IRS::TIM_Feedback_PeriodElapsedCallback() {
         GPIO_Set_Pins(Selector_Ports[2], Selector_Pins[2], !!(i & 0x04));
 
         Sys_Delay(50);
-        switch (IRS_Detect_Type)
-        {
+        switch (IRS_Detect_Type) {
         case IRS_Detect_Type_Positive:
             Channels[i] = !GPIO_Read_Pins(Data_Port, Data_Pin);
             break;

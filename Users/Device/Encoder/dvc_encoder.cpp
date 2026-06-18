@@ -42,8 +42,7 @@ void Class_Software_QEI::Init(const float &__D_T, const float &__Scale, const En
 }
 
 void Class_Software_QEI::GPIO_InterruptCallback() {
-    switch (Encoder_Count_Method)
-    {
+    switch (Encoder_Count_Method) {
     case Encoder_Count_Method_A_UP_AB:
     case Encoder_Count_Method_A_DOWN_BA:
         if (GPIO_Read_Pins(Phase_B_Port, Phase_B_Pin)) {

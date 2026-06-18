@@ -8,8 +8,6 @@
 #ifndef DRV_UART_H
 #define DRV_UART_H
 
-#include "ti_msp_dl_config.h"
-
 #include "Drivers/DMA/drv_dma.h"
 
 #define UART_BUFFER_SIZE 128
@@ -37,7 +35,7 @@ typedef void (*UART_Callback)(uint8_t *Buffer, uint16_t Length);
 typedef struct Struct_UART_Manage_Object {
     Struct_DMA_Manage_Object *DMA_Tx_Manage_Object;
     Struct_DMA_Manage_Object *DMA_Rx_Manage_Object;
-    UART_Regs *UART_Handler;
+    UART_INST *UART_Handler;
     uint8_t Tx_Buffer[UART_BUFFER_SIZE];
     uint8_t Rx_Buffer[UART_BUFFER_SIZE];
     uint16_t Rx_Buffer_Length;
@@ -92,7 +90,7 @@ extern "C" {
  * @param DMA_Rx_CH_CHAN_ID DMA接收通道ID，-1表示不使用
  */
 void UART_DMA_Init(
-    UART_Regs *UARTx, UART_Callback Callback_Function, uint16_t Rx_Buffer_Length, DMA_Regs *DMAx, int8_t DMA_Rx_CH_CHAN_ID, int8_t DMA_Tx_CH_CHAN_ID);
+    UART_INST *UARTx, UART_Callback Callback_Function, uint16_t Rx_Buffer_Length, DMA_INST *DMAx, int8_t DMA_Rx_CH_CHAN_ID, int8_t DMA_Tx_CH_CHAN_ID);
 
 /**
  * @brief UART发送
@@ -102,7 +100,7 @@ void UART_DMA_Init(
  * @param Length 长度
  * @return 执行状态
  */
-uint8_t UART_Send_Data(UART_Regs *UARTx, uint8_t *Data, uint16_t Length);
+uint8_t UART_Send_Data(UART_INST *UARTx, uint8_t *Data, uint16_t Length);
 
 /**
  * @brief UART接收
@@ -112,14 +110,14 @@ uint8_t UART_Send_Data(UART_Regs *UARTx, uint8_t *Data, uint16_t Length);
  * @param Length 长度
  * @return 执行状态
  */
-uint8_t UART_Receive_Data(UART_Regs *UARTx, uint8_t *pData, uint16_t Length);
+uint8_t UART_Receive_Data(UART_INST *UARTx, uint8_t *pData, uint16_t Length);
 
 /**
  * @brief UART中断处理函数
  * 
  * @param UARTx UART编号
  */
-__WEAK void UART_IRQHandler(UART_Regs *UARTx);
+__WEAK void UART_IRQHandler(UART_INST *UARTx);
 
 #ifdef __cplusplus
 }
