@@ -25,17 +25,24 @@ typedef struct Struct_Chassis_State {
     float now_omega;
 } Struct_Chassis_State;
 
-typedef struct Struct_Records_State {
+typedef struct Struct_Trace_State {
     float Turns;
     float Rounds;
-} Struct_Records_State;
+} Struct_Trace_State;
+
+typedef struct Struct_Visual_State {
+    uint8_t flag;
+    float x;
+    float y;
+} Struct_Visual_State;
 
 extern Struct_Motor_State Motor_State_Left;
 extern Struct_Motor_State Motor_State_Right;
 
 extern Struct_Chassis_State Chassis_State;
 
-extern Struct_Records_State Records_State;
+extern Struct_Trace_State Trace_State;
+extern Struct_Visual_State Visual_State;
 
 extern Class_Differential_Chassis chassis;
 
@@ -81,13 +88,22 @@ extern Class_Differential_Chassis chassis;
  * @brief 运动循迹
  * 
  * @param speed 前进速度
+ * @retval STATUS_BUSY 未完成行驶
+ *         STATUS_DONE 已完成行驶
  */
-void Motion_Trace(float speed);
+uint8_t Motion_Trace(float speed, uint8_t rounds);
 
 /**
  * @brief 运动停止
  */
 void Motion_Stop(void);
+
+/**
+ * @brief 视觉跟踪
+ * @retval STATUS_BUSY 未完成跟踪
+ *         STATUS_DONE 已完成跟踪
+ */
+uint8_t Visual_Trace(void);
 
 /**
  * @brief 运动控制初始化

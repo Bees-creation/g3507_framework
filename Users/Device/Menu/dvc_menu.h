@@ -81,6 +81,7 @@ enum Enum_Menu_Trigger {
  */
 enum Enum_Menu_Item_State {
     Menu_Item_State_IDLE = 0,
+    Menu_Item_State_CONFIG,
     Menu_Item_State_RUNNING,
     Menu_Item_State_STOPPING,
 };
@@ -125,14 +126,24 @@ public:
     void Display_Menu(void);
 
     /**
-     * @brief 显示菜单项
+     * @brief 显示条目，文字
      */
     void Display_Menu_Item(uint8_t index, const uint8_t *str, uint16_t fcolor = text_color, uint16_t bcolor = foreground_color);
 
     /**
-     * @brief 显示菜单项
+     * @brief 显示条目，小数
      */
-    void Display_Menu_Item(uint8_t index, float val, uint16_t len = 5, uint16_t fcolor = text_color, uint16_t bcolor = foreground_color);
+    void Display_Menu_Value(uint8_t index, float val, uint16_t len = 5, uint16_t fcolor = text_color, uint16_t bcolor = foreground_color);
+
+    /**
+     * @brief 显示条目，整数
+     */
+    void Display_Menu_Value(uint8_t index, uint16_t val, uint16_t len = 5, uint16_t fcolor = text_color, uint16_t bcolor = foreground_color);
+
+    /**
+     * @brief 隐藏条目
+     */
+    void Hide_Menu_Item(uint8_t index);
 
     /**
      * @brief 进入菜单项或任务项，并执行程序

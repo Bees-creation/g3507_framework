@@ -64,6 +64,13 @@
 | GPIO | PB15 | 电机驱动 |
 | TIMG8 | PB06 | PWM CH0 |
 | TIMG8 | PB16 | PWM CH1 |
+| SPI1 SCLK | PB09 | 显示屏 |
+| SPI1 PICO | PB08 | 显示屏 |
+| GPIO | PB10 | 显示屏 |
+| GPIO | PB11 | 显示屏 |
+| GPIO | PB14 | 显示屏 |
+| GPIO | PB26 | 显示屏 |
+| GPIO | PB21 | 用户按钮 |
 
 ## 常见问题
 

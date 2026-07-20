@@ -22,16 +22,24 @@ static inline void _Void_T(void) {
     static Enum_Menu_Item_State Void_Task_State = Menu_Item_State_IDLE;
     switch (Void_Task_State) {
     case Menu_Item_State_IDLE:
+        // 空闲态，打印信息，并进入配置态
+        Menu_Object.Display_Menu_Item(0, (const uint8_t*)"Press OK To Exit.");
+        Void_Task_State = Menu_Item_State_CONFIG;
+    case Menu_Item_State_CONFIG:
+        // 配置态，处理输入，在特定条件下进入运行态
         Void_Task_State = Menu_Item_State_RUNNING;
     case Menu_Item_State_RUNNING:
+        // 运行态，运行自动程序，在特定条件下进入退出态
         if (Menu_Object.Get_Trigger() == Menu_Trigger_OK) {
             Void_Task_State = Menu_Item_State_STOPPING;
             Menu_Object.Clear_Trigger();
         }
         break;
     case Menu_Item_State_STOPPING:
+        // 退出态，进行善后工作，并回到空闲态
+        Menu_Object.Hide_Menu_Item(0);
         Menu_Object.Exit_Menu_Item();
-        Void_Task_State = Menu_Item_State_RUNNING;
+        Void_Task_State = Menu_Item_State_IDLE;
         break;
     }
 }
@@ -42,11 +50,11 @@ void _Config_T(uint8_t *name, float &para, float min, float max, float step) {
     switch (Config_Task_State) {
     case Menu_Item_State_IDLE:
         Menu_Object.Display_Menu_Item(0, name);
-        Menu_Object.Display_Menu_Item(1, para);
-        Config_Task_State = Menu_Item_State_RUNNING;
-    case Menu_Item_State_RUNNING:
+        Menu_Object.Display_Menu_Value(1, para);
+        Config_Task_State = Menu_Item_State_CONFIG;
+    case Menu_Item_State_CONFIG:
         if (Menu_Object.Get_Trigger() == Menu_Trigger_OK) {
-            Config_Task_State = Menu_Item_State_STOPPING;
+            Config_Task_State = Menu_Item_State_RUNNING;
             Menu_Object.Clear_Trigger();
         }
         if (Menu_Object.Get_Trigger() == Menu_Trigger_SWITCH_DOWN) {
@@ -56,12 +64,15 @@ void _Config_T(uint8_t *name, float &para, float min, float max, float step) {
             } else if (para > max) {
                 para = min;
             }
-            Menu_Object.Display_Menu_Item(1, para);
+            Menu_Object.Display_Menu_Value(1, para);
             Menu_Object.Clear_Trigger();
         }
         break;
+    case Menu_Item_State_RUNNING:
+        Config_Task_State = Menu_Item_State_STOPPING;
     case Menu_Item_State_STOPPING:
-        Menu_Object.Get_LCD().Display_Fill(0, Bar_Top_Height, Menu_Object.Get_LCD().Display_Width, Bar_Top_Height + Menu_Item_Font * 2, foreground_color);
+        Menu_Object.Hide_Menu_Item(0);
+        Menu_Object.Hide_Menu_Item(1);
         Menu_Object.Exit_Menu_Item();
         Config_Task_State = Menu_Item_State_IDLE;
         break;
@@ -69,23 +80,45 @@ void _Config_T(uint8_t *name, float &para, float min, float max, float step) {
 }
 
 void Line_Tracking(void) {
+    // 目标圈数
+    static uint8_t rounds = 1;
+    uint8_t flag = STATUS_BUSY;
     static Enum_Menu_Item_State Void_Task_State = Menu_Item_State_IDLE;
     switch (Void_Task_State) {
     case Menu_Item_State_IDLE:
+        Menu_Object.Display_Menu_Item(0, (uint8_t *)"rounds");
+        Menu_Object.Display_Menu_Value(1, (uint16_t)rounds);
+        Void_Task_State = Menu_Item_State_CONFIG;
+    case Menu_Item_State_CONFIG:
         if (Menu_Object.Get_Trigger() == Menu_Trigger_OK) {
+            Menu_Object.Display_Menu_Item(2, (uint8_t *)"running");
             Void_Task_State = Menu_Item_State_RUNNING;
+            Menu_Object.Clear_Trigger();
+        }
+        if (Menu_Object.Get_Trigger() == Menu_Trigger_SWITCH_DOWN) {
+            rounds += 1;
+            if (rounds < 1) {
+                rounds = 5;
+            } else if (rounds > 5) {
+                rounds = 1;
+            }
+            Menu_Object.Display_Menu_Value(1, (uint16_t)rounds);
             Menu_Object.Clear_Trigger();
         }
         break;
     case Menu_Item_State_RUNNING:
-        Motion_Trace(500);
-        if (Menu_Object.Get_Trigger() == Menu_Trigger_OK) {
+        flag = Motion_Trace(500, rounds);
+        if (Menu_Object.Get_Trigger() == Menu_Trigger_OK || flag == STATUS_DONE) {
             Void_Task_State = Menu_Item_State_STOPPING;
             Menu_Object.Clear_Trigger();
         }
         break;
     case Menu_Item_State_STOPPING:
+        rounds = 0;
         Motion_Stop();
+        Menu_Object.Hide_Menu_Item(0);
+        Menu_Object.Hide_Menu_Item(1);
+        Menu_Object.Hide_Menu_Item(2);
         Menu_Object.Exit_Menu_Item();
         Void_Task_State = Menu_Item_State_IDLE;
         break;
@@ -93,7 +126,27 @@ void Line_Tracking(void) {
 }
 
 void Target_Detection(void) {
-    _Void_T();
+    uint8_t flag = STATUS_BUSY;
+    static Enum_Menu_Item_State Void_Task_State = Menu_Item_State_IDLE;
+    switch (Void_Task_State) {
+    case Menu_Item_State_IDLE:
+        Menu_Object.Display_Menu_Item(0, (const uint8_t*)"running");
+        Void_Task_State = Menu_Item_State_CONFIG;
+    case Menu_Item_State_CONFIG:
+        Void_Task_State = Menu_Item_State_RUNNING;
+    case Menu_Item_State_RUNNING:
+        flag = Visual_Trace();
+        if (Menu_Object.Get_Trigger() == Menu_Trigger_OK || flag == STATUS_DONE) {
+            Void_Task_State = Menu_Item_State_STOPPING;
+            Menu_Object.Clear_Trigger();
+        }
+        break;
+    case Menu_Item_State_STOPPING:
+        Menu_Object.Hide_Menu_Item(0);
+        Menu_Object.Exit_Menu_Item();
+        Void_Task_State = Menu_Item_State_IDLE;
+        break;
+    }
 }
 
 void Auto_Aim(void) {
@@ -103,7 +156,7 @@ void Auto_Aim(void) {
 void Config_Kp(void) {
     float& Kpl = chassis.Left_Motor.Omega_Loop.Get_K_P();
     float& Kpr = chassis.Right_Motor.Omega_Loop.Get_K_P();
-    _Config_T((uint8_t*)"Kp", Kpl, 50.0f, 250.0f, 10.0f);
+    _Config_T((uint8_t*)"Kp", Kpl, 50.0f, 150.0f, 10.0f);
     Kpr = Kpl;
 }
 
@@ -133,21 +186,24 @@ void About(void) {
     switch (Config_Task_State) {
     case Menu_Item_State_IDLE:
         Menu_Object.Get_LCD().Display_String(32, 44, (const uint8_t*)"Github @Bees-creation", LIGHTBLUE, foreground_color, Font_Size_16_08, 0);
-        Config_Task_State = Menu_Item_State_RUNNING;
+        Config_Task_State = Menu_Item_State_CONFIG;
         break;
+    case Menu_Item_State_CONFIG:
+        Config_Task_State = Menu_Item_State_RUNNING;
     case Menu_Item_State_RUNNING:
         if (Menu_Object.Get_Trigger() == Menu_Trigger_OK) {
             Config_Task_State = Menu_Item_State_STOPPING;
             Menu_Object.Clear_Trigger();
         }
-        _Display_Cube(pts, background_color);
+        _Display_Cube(pts, foreground_color);
         // 计算当前帧的8个屏幕坐标
         renderer.computeScreenPoints(time * 0.8f, time * 1.2f, time * 0.5f, pts);
-        _Display_Cube(pts, text_color);
+        // 计算颜色
+        _Display_Cube(pts, CubeRenderer::_rgb565Gen(time));
         time += 0.2f;
         break;
     case Menu_Item_State_STOPPING:
-        _Display_Cube(pts, background_color);
+        _Display_Cube(pts, foreground_color);
         Menu_Object.Get_LCD().Display_Fill(0, 44, 240, 60, foreground_color);
         Menu_Object.Exit_Menu_Item();
         Config_Task_State = Menu_Item_State_IDLE;

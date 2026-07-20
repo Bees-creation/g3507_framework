@@ -15,7 +15,8 @@ Struct_Motor_State Motor_State_Right = {0};
 
 Struct_Chassis_State Chassis_State = {0};
 
-Struct_Records_State Records_State;
+Struct_Trace_State Trace_State;
+Struct_Visual_State Visual_State;
 
 Class_Brush_Motor_Drv8701e Left_Motor;
 Class_Brush_Motor_Drv8701e Right_Motor;
@@ -29,8 +30,8 @@ enum Enum_Car_State {
     Car_State_LOST,// 丢失轨迹
 };
 
-void Motion_Trace(float speed) {
-    Enum_Car_State state = Car_State_IDLE;
+uint8_t Motion_Trace(float speed, uint8_t rounds) {
+    static Enum_Car_State state = Car_State_IDLE;
 
     uint8_t status = 0;// 轨迹状态
     const int8_t weight[8] = {-7, -5, -3, -1, 1, 3, 5, 7};
@@ -94,6 +95,13 @@ void Motion_Trace(float speed) {
             chassis.Set_Target_Velocity_Y(100);
             chassis.Set_Target_Omega(-0.4f);
             if (Math_Abs(Target_Yaw - Yaw) < 5) {
+                Trace_State.Turns++;
+                if (Trace_State.Turns >= 4) {
+                    Trace_State.Rounds++;
+                }
+                if (Trace_State.Rounds >= rounds) {
+                    return STATUS_DONE;
+                }
                 state = Car_State_IDLE;
             }
             break;
@@ -109,11 +117,28 @@ void Motion_Trace(float speed) {
             chassis.Set_Target_Omega(0);
             break;
     }
+    return STATUS_BUSY;
 }
 
 void Motion_Stop(void) {
     chassis.Set_Target_Velocity_Y(0);
     chassis.Set_Target_Omega(0);
+}
+
+uint8_t Visual_Trace(void) {
+    uint8_t flag = Visual_State.flag;
+    float x = Visual_State.x;
+    float y = Visual_State.y;
+    // 判断操作
+    switch (flag) {
+    case 0:// 正常追踪
+    
+        break;
+    case 1:// 丢失
+
+        break;
+    }
+    return STATUS_BUSY;
 }
 
 void Motion_Init(void) {

@@ -52,8 +52,50 @@ public:
      */
     void computeScreenPoints(float rx, float ry, float rz, ScreenPoint out[8]) const;
 
+    /**
+     * @brief 计算随时间变化的RGB565颜色值
+     * 
+     * @param time 时间
+     * @retval uint16_t RGB565颜色值
+     */
+    static uint16_t _rgb565Gen(float time) {
+        // 三个不同频率的正余弦交叉调制
+        float raw_hue = 0.5f + 0.5f * sinf(time * 0.3f) * cosf(time * 0.7f)
+                    + 0.15f * sinf(time * 1.1f + 0.8f);
+        // 安全归一化到[0,1]
+        float hue = fmodf(raw_hue, 1.0f);
+        if (hue < 0) hue += 1.0f;
+        // 饱和度与明度也带点不规则变化
+        float sat = 0.6f + 0.3f * sinf(time * 0.4f + 1.5f);
+        float val = 0.9f + 0.1f * sinf(time * 0.2f + 2.3f);
+
+        // HSV~RGB
+        int sector = (int)(hue * 6.0f);
+        float frac = hue * 6.0f - sector;
+
+        float p = val * (1.0f - sat);
+        float q = val * (1.0f - sat * frac);
+        float t = val * (1.0f - sat * (1.0f - frac));
+
+        float r, g, b;
+        switch (sector) {
+            case 0: r = val; g = t;  b = p;  break;// 红~黄
+            case 1: r = q;  g = val; b = p;  break;// 黄~绿
+            case 2: r = p;  g = val; b = t;  break;// 绿~青
+            case 3: r = p;  g = q;  b = val; break;// 青~蓝
+            case 4: r = t;  g = p;  b = val; break;// 蓝~紫
+            default:r = val; g = p;  b = q;  break;// 紫~红
+        }
+
+        // 量化到RGB565
+        uint8_t R = (uint8_t)(r * 31.0f + 0.5f);
+        uint8_t G = (uint8_t)(g * 63.0f + 0.5f);
+        uint8_t B = (uint8_t)(b * 31.0f + 0.5f);
+        return (uint16_t)((R << 11) | (G << 5) | B);
+    }
+
 private:
-    // 立方体局部坐标顶点（范围 -1 ~ 1）
+    // 立方体局部坐标顶点，范围[-1,1]
     static const Vector3 cube_vertices_[8];
 
     int screen_w_;

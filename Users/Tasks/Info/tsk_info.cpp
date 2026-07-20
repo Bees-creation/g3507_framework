@@ -15,9 +15,9 @@
 Class_Serialport Serialport_Object;
 
 const char Serialport_Rx_Variable_Assignment_List[][SERIALPORT_RX_VARIABLE_ASSIGNMENT_LENGTH] = {
-    "target_distance",
-    "target_speed",
-    "target_omega",
+    "flag",
+    "x",
+    "y",
 };
 
 void Info_Init(void) {
@@ -40,13 +40,13 @@ void Serialport_Callback(uint8_t *Buffer, uint16_t Length) {
 
     switch (Serialport_Object.Get_Variable_Index()) {
     case 0:
-        Chassis_State.target_distance = Serialport_Object.Get_Variable_Value();
+        Visual_State.flag = Serialport_Object.Get_Variable_Value();
         break;
     case 1:
-        Chassis_State.target_speed = Serialport_Object.Get_Variable_Value();
+        Visual_State.x = Serialport_Object.Get_Variable_Value();
         break;
     case 2:
-        Chassis_State.target_omega = Serialport_Object.Get_Variable_Value();
+        Visual_State.y = Serialport_Object.Get_Variable_Value();
         break;
     default:
         break;
