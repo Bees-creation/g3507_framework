@@ -31,30 +31,28 @@ enum Enum_Car_State {
 };
 
 uint8_t Motion_Trace(float speed, uint8_t rounds) {
-    static Enum_Car_State state = Car_State_IDLE;
+    static Enum_Car_State state = Car_State_IDLE;// 小车运动状态机
 
-    uint8_t status = 0;// 轨迹状态
+    uint8_t status = 0;// 巡迹模块八位通道值
     const int8_t weight[8] = {-7, -5, -3, -1, 1, 3, 5, 7};
-    static int16_t last_bias = 0;
     int8_t bias = 0;// 轨迹偏离
     for (int i = 0; i < 8; i++) {
         if (Channels[i] == 1) {
-            status |= 0x01;// 计算轨迹状态
+            status |= 0x01;// 通道值转换
             bias += weight[i];// 计算轨迹偏离
         }
-        status = (status << 1);
     }
-    bias *= DIFF_KP;
+    bias *= DIFF_KP;// 计算旋转速度
 
-    // 目标旋转角度
+    // 转向控制角度
     static float Target_Yaw;
 
-    // 判断轨迹状态
+    // 根据八位通道值判断巡迹状态
     switch (status) {
     case 0xF0:// 11110000
     case 0xF8:// 11111000
     case 0xFC:// 11111100
-    /* 左转 */
+    /* 直角左转 */
         if (state == Car_State_FORWARD) {
             Target_Yaw = Yaw - 90.0f;// 设定转向角度
             state = Car_State_LEFT;// 如果正在循迹行驶，那么进入左转状态
@@ -63,7 +61,7 @@ uint8_t Motion_Trace(float speed, uint8_t rounds) {
     case 0x0F:// 00001111
     case 0x1F:// 00011111
     case 0x3F:// 00111111
-    /* 右转 */
+    /* 直角右转 */
         if (state == Car_State_FORWARD) {
             Target_Yaw = Yaw + 90.0f;// 设定转向角度
             state = Car_State_RIGHT;// 如果正在循迹行驶，那么进入右转状态
@@ -82,38 +80,39 @@ uint8_t Motion_Trace(float speed, uint8_t rounds) {
         break;
     }
 
+    // 小车运动状态机控制
     switch (state) {
         case Car_State_IDLE:
+            // 空闲时静止
             chassis.Set_Target_Velocity_Y(0);
             chassis.Set_Target_Omega(0);
             break;
         case Car_State_FORWARD:
+            // 默认巡迹方法
             chassis.Set_Target_Velocity_Y(speed);
             chassis.Set_Target_Omega(bias);
             break;
         case Car_State_LEFT:
+            // 左转 90 度
             chassis.Set_Target_Velocity_Y(100);
-            chassis.Set_Target_Omega(-0.4f);
-            if (Math_Abs(Target_Yaw - Yaw) < 5) {
-                Trace_State.Turns++;
-                if (Trace_State.Turns >= 4) {
-                    Trace_State.Rounds++;
-                }
-                if (Trace_State.Rounds >= rounds) {
-                    return STATUS_DONE;
-                }
+            chassis.Set_Target_Omega(0.4f);
+            if (Math_Abs(Target_Yaw - Yaw) < 5.0f) {
                 state = Car_State_IDLE;
+                return Trace_State.Turn(rounds);
             }
             break;
         case Car_State_RIGHT:
+            // 右转 90 度
             chassis.Set_Target_Velocity_Y(100);
-            chassis.Set_Target_Omega(0.4f);
-            if (Math_Abs(Target_Yaw - Yaw) < 5) {
+            chassis.Set_Target_Omega(-0.4f);
+            if (Math_Abs(Target_Yaw - Yaw) < 5.0f) {
                 state = Car_State_IDLE;
+                return Trace_State.Turn(rounds);
             }
             break;
         case Car_State_LOST:
-            chassis.Set_Target_Velocity_Y(-50);
+            // 默认丢失轨迹寻找
+            chassis.Set_Target_Velocity_Y(-100);
             chassis.Set_Target_Omega(0);
             break;
     }
@@ -121,6 +120,7 @@ uint8_t Motion_Trace(float speed, uint8_t rounds) {
 }
 
 void Motion_Stop(void) {
+    Trace_State.Clear();// 清空圈数记录
     chassis.Set_Target_Velocity_Y(0);
     chassis.Set_Target_Omega(0);
 }

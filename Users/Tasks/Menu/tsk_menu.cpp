@@ -107,14 +107,14 @@ void Line_Tracking(void) {
         }
         break;
     case Menu_Item_State_RUNNING:
-        flag = Motion_Trace(500, rounds);
+        flag = Motion_Trace(250, rounds);
         if (Menu_Object.Get_Trigger() == Menu_Trigger_OK || flag == STATUS_DONE) {
             Void_Task_State = Menu_Item_State_STOPPING;
             Menu_Object.Clear_Trigger();
         }
         break;
     case Menu_Item_State_STOPPING:
-        rounds = 0;
+        rounds = 1;
         Motion_Stop();
         Menu_Object.Hide_Menu_Item(0);
         Menu_Object.Hide_Menu_Item(1);

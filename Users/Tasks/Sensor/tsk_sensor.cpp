@@ -10,7 +10,7 @@ Class_8C_IRS IRS;
 
 Class_IMU_Mspm0g3507 IMU(UART2_Manage_Object);
 
-float Channels[8];
+uint8_t Channels[8];
 
 float Yaw;
 float GyroZ;
