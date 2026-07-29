@@ -12,8 +12,26 @@ Class_IMU_Mspm0g3507 IMU(UART2_Manage_Object);
 
 uint8_t Channels[8];
 
-float Yaw;
+Angle_t Yaw;
 float GyroZ;
+
+Angle_t Previous_Yaw;
+Rotation_t Current_Rotation;
+Rotation_t Target_Rotation;
+
+void Rotation_Init(void) {
+    Previous_Yaw = Yaw;
+    Target_Rotation = Yaw + 360.0f;
+}
+
+void Rotation_Update(void) {
+    Current_Rotation = (Current_Rotation + (Yaw - Previous_Yaw));
+    Previous_Yaw = Yaw;
+}
+
+void Rotation_Clear(void) {
+    Current_Rotation = 0.0f;
+}
 
 void Sensor_Init(void) {
     // 巡线模块初始化
@@ -32,8 +50,8 @@ void Sensor_Task(void) {
     }
 
     // IMU模块任务
-    Yaw = IMU.Get_Yaw();
-    GyroZ = IMU.Get_GyroZ();
+    Yaw = -IMU.Get_Yaw();
+    GyroZ = -IMU.Get_GyroZ();
 }
 
 void IMU_Callback(uint8_t *Buffer, uint16_t Length) {

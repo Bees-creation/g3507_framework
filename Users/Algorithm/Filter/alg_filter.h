@@ -27,4 +27,31 @@ Type Filter_First_Order(Type *x, Type *y, Type a) {
     return (*y);
 }
 
+// 计数器滤波
+class Class_RepeatCounter {
+public:
+    Class_RepeatCounter(uint32_t __Threshold)
+    : Threshold(__Threshold) {
+    }
+
+    bool Count() {
+        Repeat++;
+        if (Repeat >= Threshold) {
+            Repeat = 0;
+            return 1;
+        }
+        else {
+            return 0;
+        }
+    }
+
+    void Collapse() {
+        Repeat = 0;
+    }
+
+private:
+    uint32_t Repeat = 0;
+    uint32_t Threshold;
+};
+
 #endif /* ALG_FILTER_H */

@@ -48,8 +48,8 @@
 | DEBUGSS | PA20 | Debug Clock |
 | DEBUGSS | PA19 | Debug Data In Out |
 | GPIO | PB22 | 板载LED |
-| UART1 TX | PB04 | 串口绘图 |
-| UART1 RX | PB05 | 串口绘图 |
+| UART0 TX | PB04 | 蓝牙串口 |
+| UART0 RX | PB05 | 蓝牙串口 |
 | UART2 TX | PA21 | 陀螺仪串口 |
 | UART2 RX | PB18 | 陀螺仪串口 |
 | GPIO | PA24 | 红外巡线 |
@@ -62,8 +62,10 @@
 | GPIO | PB27 | 软件编码器 |
 | GPIO | PA12 | 电机驱动 |
 | GPIO | PB15 | 电机驱动 |
-| TIMG8 | PB06 | PWM CH0 |
-| TIMG8 | PB16 | PWM CH1 |
+| GPIO | PA15 | 步进电机驱动 |
+| TIMG8 | PB06 | 电机 PWM CH0 |
+| TIMG8 | PB16 | 电机 PWM CH1 |
+| TIMG7 | PA17 | 步进电机 PWM CH0 |
 | SPI1 SCLK | PB09 | 显示屏 |
 | SPI1 PICO | PB08 | 显示屏 |
 | GPIO | PB10 | 显示屏 |

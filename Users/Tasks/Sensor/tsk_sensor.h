@@ -7,15 +7,24 @@
 #ifndef TSK_SENSOR_H
 #define TSK_SENSOR_H
 
+#include "Algorithm/Math/alg_math.h"
 #include "Device/IRS/dvc_infraredsensor.h"
 #include "Device/IMU/dvc_imu.h"
 
 // 通道值，1表示轨迹
 extern uint8_t Channels[8];
 
-// 偏航角，偏航加速度
-extern float Yaw;
+// 偏航角，与底盘坐标系反向，即逆时针为正方向
+extern Angle_t Yaw;
+// 偏航加速度
 extern float GyroZ;
+
+// 上次绝对角度
+extern Angle_t Previous_Yaw;
+// 当前相对角度
+extern Rotation_t Current_Rotation;
+// 目标相对角度
+extern Rotation_t Target_Rotation;
 
 #define IRS_PORT_AD0 GPIO_PORT_A
 #define IRS_PIN_AD0 GPIO_PIN_25
@@ -25,6 +34,12 @@ extern float GyroZ;
 #define IRS_PIN_AD2 GPIO_PIN_26
 #define IRS_PORT_OUT GPIO_PORT_A
 #define IRS_PIN_OUT GPIO_PIN_27
+
+void Rotation_Init(void);
+
+void Rotation_Update(void);
+
+void Rotation_Clear(void);
 
 void Sensor_Init(void);
 

@@ -8,6 +8,7 @@
 #define TSK_INFO_H
 
 #include "Device/Serialport/dvc_serialport.h"
+#include "Device/Timer/timer.h"
 
 /**
  * @brief 信息显示初始化

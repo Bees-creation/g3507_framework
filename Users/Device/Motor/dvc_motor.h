@@ -142,6 +142,10 @@ public:
      * @param __Channel 绑定的定时器通道
      * @param __Control_Method 控制方法
      * @param __Control_Algorithm 控制算法
+     * @param __Direction_Port 方向引脚
+     * @param __Direction_Pin 方向引脚
+     * @param __D_T 更新周期
+     * @param __Filter 滤波系数
      */
     void Init(TIMER_INST *TIMx, TIMER_CHANNEL __Channel, const Enum_Motor_Control_Method &__Control_Method, const Enum_Motor_Control_Algorithm &__Control_Algorithm, GPIO_PORT *__Direction_Port, GPIO_PIN __Direction_Pin, float __D_T, float __Filter = 0.5f);
 
@@ -175,6 +179,167 @@ protected:
     GPIO_PIN Direction_Pin;
     // 一次滤波系数
     float Filter = 0.5f;
+};
+
+enum Enum_Stepping_Motor_Control_Method {
+    Stepping_Motor_Control_Method_Position = 0,// 位置模式
+    Stepping_Motor_Control_Method_Speed,// 速度模式
+};
+
+/**
+ * @brief 步进电机基类
+ */
+class Class_Stepping_Motor {
+public:
+    /**
+     * @brief 进行一次速度计算
+     */
+    virtual void TIM_Calculate_PeriodElapsedCallback() = 0;
+
+    /**
+     * @brief 输出电机状态
+     */
+    virtual void TIM_Output_PeriodElapsedCallback() = 0;
+
+    /**
+     * @brief 更新电机状态
+     */
+    virtual void TIM_Feedback_PeriodElapsedCallback() = 0;
+
+    /**
+     * @brief 设定相对目标角度
+     * 
+     * @param __Relative_Target_Angle 相对目标角度
+     */
+    inline void Set_Relative_Target_Angle(const float &__Relative_Target_Angle) {
+        Absolute_Target_Angle += __Relative_Target_Angle;
+    }
+
+    /**
+     * @brief 设定绝对目标角度
+     * 
+     * @param __Absolute_Target_Angle 绝对目标角度
+     */
+    inline void Set_Absolute_Target_Angle(const float &__Absolute_Target_Angle) {
+        Absolute_Target_Angle = __Absolute_Target_Angle;
+    }
+
+    /**
+     * @brief 设定绝对目标角速度
+     * 
+     * @param __Absolute_Target_Omega 绝对目标角速度
+     */
+    inline void Set_Absolute_Target_Omega(const float &__Absolute_Target_Omega) {
+        Absolute_Target_Omega = __Absolute_Target_Omega;
+    }
+
+    /**
+     * @brief 获取角度
+     * 
+     * @retval 角度
+     */
+    inline float Get_Angle(void) {
+        return Now_Angle;
+    }
+
+    /**
+     * @brief 获取角速度
+     * 
+     * @retval 角速度
+     */
+    inline float Get_Omega(void) {
+        return Now_Omega;
+    }
+
+protected:
+    // 控制方法
+    Enum_Motor_Control_Method Control_Method = Motor_Control_Method_Omega;
+
+    // 更新周期
+    float D_T;
+
+    // 当前角度
+    float Now_Angle = 0.0f;
+    // 当前角速度
+    float Now_Omega = 0.0f;
+    // 绝对目标角度
+    float Absolute_Target_Angle = 0.0f;
+    // 绝对目标角速度
+    float Absolute_Target_Omega = 0.0f;
+
+    // 时钟频率
+    uint32_t Frequency = 10000;
+    // 步进频率
+    float Out = 0.0f;
+    // 步进限幅
+    float Min = 0.1f;
+    float Max = 1.0f;
+
+    // 每圈步数
+    uint32_t Scale = 200;
+    // 细分倍数
+    uint8_t Division = 1;
+    // 每rad步长
+    uint32_t Step;
+
+    // 当前步数
+    uint32_t Count;
+};
+
+/**
+ * @brief 使用D36A驱动芯片的步进电机
+ * 
+ * @note 只有位置控制和速度控制
+ */
+class Class_Stepping_Motor_D36A : public Class_Stepping_Motor {
+public:
+    /**
+     * @brief 初始化函数
+     * 
+     * @param TIMx 绑定的定时器
+     * @param __Channel 绑定的定时器通道
+     * @param __Control_Method 控制方法
+     * @param __Direction_Port 方向引脚
+     * @param __Direction_Pin 方向引脚
+     * @param __Enable_Port 使能引脚
+     * @param __Enable_Pin 使能引脚
+     * @param __D_T 更新周期
+     * @param __Frequency 时钟频率
+     * @param __Min 步进限幅
+     * @param __Max 步进限幅
+     * @param __Scale 每圈步数
+     * @param __Division 细分倍数
+     */
+    void Init(TIMER_INST *TIMx, TIMER_CHANNEL __Channel, const Enum_Motor_Control_Method &__Control_Method, GPIO_PORT *__Direction_Port, GPIO_PIN __Direction_Pin, float __D_T, uint32_t __Frequency, float __Min, float __Max, uint32_t __Scale, uint8_t __Division);
+
+    /**
+     * @brief 启动电机
+     */
+    inline void Start_Motor(void) {
+        TIM_Start_Counter(TIM);
+    }
+
+    /**
+     * @brief 停止电机
+     */
+    inline void Stop_Motor(void) {
+        TIM_Stop_Counter(TIM);
+    }
+
+    virtual void TIM_Calculate_PeriodElapsedCallback() override;
+
+    virtual void TIM_Output_PeriodElapsedCallback() override;
+
+    virtual void TIM_Feedback_PeriodElapsedCallback() override;
+
+protected:
+    // 绑定的定时器
+    TIMER_INST *TIM = nullptr;
+    // 绑定的定时器通道
+    TIMER_CHANNEL Channel;
+    // 方向控制引脚
+    GPIO_PORT *Direction_Port;
+    GPIO_PIN Direction_Pin;
 };
 
 #endif /* DVC_MOTOR_H */

@@ -7,12 +7,17 @@
 #include "tsk_menu.h"
 
 /** 在此处引用任务函数头文件 -- begin -- */
+#include "Tasks/Info/tsk_info.h"
+#include "Tasks/Sensor/tsk_sensor.h"
 #include "Tasks/Motion/tsk_motion.h"
 /** 在此处引用任务函数头文件 --  end  -- */
 
 /* 图片文件 */
 #include "Algorithm/Graphics/alg_graphics.h"
 #include "Device/LCD/dvc_icon.h"
+
+// 毫秒级时间戳
+static uint32_t time;
 
 /** 在此处定义任务函数 -- begin -- */
 extern Class_Menu Menu_Object;
@@ -79,77 +84,55 @@ void _Config_T(uint8_t *name, float &para, float min, float max, float step) {
     }
 }
 
+void Image_Transmission(void) {
+    // 开启图传
+    _Void_T();
+}
+
 void Line_Tracking(void) {
-    // 目标圈数
-    static uint8_t rounds = 1;
+    // 巡迹行驶
     uint8_t flag = STATUS_BUSY;
     static Enum_Menu_Item_State Void_Task_State = Menu_Item_State_IDLE;
     switch (Void_Task_State) {
     case Menu_Item_State_IDLE:
-        Menu_Object.Display_Menu_Item(0, (uint8_t *)"rounds");
-        Menu_Object.Display_Menu_Value(1, (uint16_t)rounds);
+        Menu_Object.Display_Menu_Item(0, (const uint8_t*)"Seconds:");
         Void_Task_State = Menu_Item_State_CONFIG;
     case Menu_Item_State_CONFIG:
-        if (Menu_Object.Get_Trigger() == Menu_Trigger_OK) {
-            Menu_Object.Display_Menu_Item(2, (uint8_t *)"running");
-            Void_Task_State = Menu_Item_State_RUNNING;
-            Menu_Object.Clear_Trigger();
-        }
-        if (Menu_Object.Get_Trigger() == Menu_Trigger_SWITCH_DOWN) {
-            rounds += 1;
-            if (rounds < 1) {
-                rounds = 5;
-            } else if (rounds > 5) {
-                rounds = 1;
-            }
-            Menu_Object.Display_Menu_Value(1, (uint16_t)rounds);
-            Menu_Object.Clear_Trigger();
-        }
+        // 重置定时器
+        Class_Timer::Clear();
+        Rotation_Init();
+        Motion_Init();
+        Void_Task_State = Menu_Item_State_RUNNING;
         break;
     case Menu_Item_State_RUNNING:
-        flag = Motion_Trace(250, rounds);
+        // 更新计时器
+        Class_Timer::Update();
+        Rotation_Update();
+        if ((Class_Timer::Get() - time) >= 50) {
+            Menu_Object.Display_Menu_Value(1, (Class_Timer::Get() / 1000.0f));
+            time = Class_Timer::Get();
+        }
+        flag = Motion_Trace(250);
         if (Menu_Object.Get_Trigger() == Menu_Trigger_OK || flag == STATUS_DONE) {
             Void_Task_State = Menu_Item_State_STOPPING;
             Menu_Object.Clear_Trigger();
         }
         break;
     case Menu_Item_State_STOPPING:
-        rounds = 1;
+        // 重置定时器
+        Class_Timer::Clear();
+        Rotation_Clear();
         Motion_Stop();
         Menu_Object.Hide_Menu_Item(0);
         Menu_Object.Hide_Menu_Item(1);
-        Menu_Object.Hide_Menu_Item(2);
         Menu_Object.Exit_Menu_Item();
         Void_Task_State = Menu_Item_State_IDLE;
         break;
     }
 }
 
-void Target_Detection(void) {
-    uint8_t flag = STATUS_BUSY;
-    static Enum_Menu_Item_State Void_Task_State = Menu_Item_State_IDLE;
-    switch (Void_Task_State) {
-    case Menu_Item_State_IDLE:
-        Menu_Object.Display_Menu_Item(0, (const uint8_t*)"running");
-        Void_Task_State = Menu_Item_State_CONFIG;
-    case Menu_Item_State_CONFIG:
-        Void_Task_State = Menu_Item_State_RUNNING;
-    case Menu_Item_State_RUNNING:
-        flag = Visual_Trace();
-        if (Menu_Object.Get_Trigger() == Menu_Trigger_OK || flag == STATUS_DONE) {
-            Void_Task_State = Menu_Item_State_STOPPING;
-            Menu_Object.Clear_Trigger();
-        }
-        break;
-    case Menu_Item_State_STOPPING:
-        Menu_Object.Hide_Menu_Item(0);
-        Menu_Object.Exit_Menu_Item();
-        Void_Task_State = Menu_Item_State_IDLE;
-        break;
-    }
-}
-
-void Auto_Aim(void) {
+void Ball_Tracking(void) {
+    // 小球滚动
     _Void_T();
 }
 
@@ -213,7 +196,7 @@ void About(void) {
 /** 在此处定义任务函数 --  end  -- */
 
 /* 任务状态 */
-void (*Task_List[])(void) = { Line_Tracking, Target_Detection, Auto_Aim, Config_Kp, About, };
+void (*Task_List[])(void) = { Image_Transmission, Line_Tracking, Ball_Tracking, Config_Kp, About, };
 constexpr uint8_t TASK_NUMS = (sizeoflist(Task_List));
 uint8_t Task_Status[TASK_NUMS];
 
@@ -230,9 +213,9 @@ Struct_Menu_Item Home_Item_List[] = {
 
 Struct_Menu_Item Runs_Item_List[] = {
     { (const uint8_t*)"..", NULL, &Home },
-    { (const uint8_t*)"Line Tracking", &Task_Status[0], NULL },
-    { (const uint8_t*)"Target Detection", &Task_Status[1], NULL },
-    { (const uint8_t*)"Auto Aim", &Task_Status[2], NULL },
+    { (const uint8_t*)"Image Transmission", &Task_Status[0], NULL },
+    { (const uint8_t*)"Line Tracking", &Task_Status[1], NULL },
+    { (const uint8_t*)"Ball Tracking", &Task_Status[2], NULL },
 };
 
 Struct_Menu_Item Options_Item_List[] = {

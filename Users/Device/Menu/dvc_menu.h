@@ -33,7 +33,7 @@ constexpr uint8_t Bar_Bottom_Item_Bias = 32;
 constexpr uint8_t Bar_Bottom_Item_Gaps = 12;
 
 // 菜单栏属性
-constexpr Enum_Font_Size Menu_Item_Font = Font_Size_24_12;// 字体大小
+constexpr Enum_Font_Size Menu_Item_Font = Font_Size_16_08;// 字体大小
 constexpr uint8_t Menu_Item_Bias = 0;// 项缩进
 
 typedef struct Struct_Menu Struct_Menu;// 菜单前向声明

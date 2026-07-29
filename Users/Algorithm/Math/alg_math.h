@@ -8,7 +8,7 @@
 #ifndef ALG_MATH_H
 #define ALG_MATH_H
 
-#include <stdint.h>
+#include <math.h>
 
 #ifndef PI
 #define PI 3.14159265358979f
@@ -131,5 +131,109 @@ Type Math_Quintic_Polynomial_Interpolation(Type x1, Type x2, Type t, Type T) {
     float y = 6 * pow(t, 5) - 15 * pow(t, 4) + 10 * pow(t, 3);
     return Math_Denormalization(y, x1, x2);
 }
+
+/**
+ * @brief 绝对角度类型
+ * 
+ * @param _value 绝对角度，范围 [-180°, 180°)
+ */
+class Angle_t {
+private:
+    float _value;
+
+    /**
+     * @brief 角度标准化
+     * 
+     * @param angle 任意角度，范围 (-Inf, Inf)
+     */
+    static float Normalize(float angle) {
+        angle = fmodf(angle, 360.0f);
+        if (angle >= 180.0f) { angle -= 360.0f; }
+        else if (angle < -180.0f) { angle += 360.0f; }
+        return angle;
+    }
+
+public:
+    /**
+     * @brief 默认初始化
+     */
+    Angle_t() : _value(0.0f) {}
+
+    /**
+     * @brief 传入角度初始化
+     * 
+     * @param angle 任意角度，范围 (-Inf, Inf)
+     */
+    Angle_t(float angle) : _value(Normalize(angle)) {}
+
+    /**
+     * @brief 隐式类型转换，可以将类当作 float 变量传参
+     * 
+     * @retval 绝对角度，范围 [-180°, 180°)
+     */
+    operator float() const { return _value; }
+
+    /**
+     * @brief 赋值运算符，用于从 float 变量赋值
+     * 
+     * @param angle 任意角度，范围 (-Inf, Inf)
+     * @retval 绝对角度类型
+     */
+    Angle_t& operator=(float angle) {
+        _value = Normalize(angle);
+        return *this;
+    }
+
+    /**
+     * @brief 减号运算符，用于计算 Angle_t 最小角度差值
+     * 
+     * @param other 绝对角度类型
+     * @retval 绝对角度类型
+     */
+    Angle_t operator-(const Angle_t& other) const {
+        return Angle_t(_value - other._value);
+    }
+};
+
+/**
+ * @brief 相对角度类型
+ * 
+ * @param _value 相对角度，范围 (-Inf, Inf)
+ */
+class Rotation_t {
+private:
+    float _value;
+
+public:
+    /**
+     * @brief 默认初始化
+     */
+    Rotation_t() : _value(0.0f) {}
+
+    /**
+     * @brief 传入角度初始化
+     * 
+     * @param angle 任意角度，范围 (-Inf, Inf)
+     */
+    Rotation_t(float val) : _value(val) {}
+
+    /**
+     * @brief 隐式类型转换，可以将类当作 float 变量传参
+     * 
+     * @retval 相对角度，范围 (-Inf, Inf)
+     */
+    operator float() const { return _value; }
+
+    /**
+     * @brief 赋值运算符，用于从 float 变量赋值
+     * 
+     * @param angle 任意角度，范围 (-Inf, Inf)
+     * @retval 相对角度类型
+     */
+    Rotation_t& operator=(float angle) {
+        _value = angle;
+        return *this;
+    }
+};
 
 #endif /* ALG_MATH_H */

@@ -91,25 +91,25 @@
  * @typedef TIMER_INST
  */
 #if defined TIMG0_BASE
-#define TIMG0 TIMG0_BASE
+#define TIMG0 TIMG0
 #endif
 #if defined TIMG6_BASE
-#define TIMG6 TIMG6_BASE
+#define TIMG6 TIMG6
 #endif
 #if defined TIMG7_BASE
-#define TIMG7 TIMG7_BASE
+#define TIMG7 TIMG7
 #endif
 #if defined TIMG8_BASE
-#define TIMG8 TIMG8_BASE
+#define TIMG8 TIMG8
 #endif
 #if defined TIMG12_BASE
-#define TIMG12 TIMG12_BASE
+#define TIMG12 TIMG12
 #endif
 #if defined TIMA0_BASE
-#define TIMA0 TIMA0_BASE
+#define TIMA0 TIMA0
 #endif
 #if defined TIMA1_BASE
-#define TIMA1 TIMA1_BASE
+#define TIMA1 TIMA1
 #endif
 
 /**
