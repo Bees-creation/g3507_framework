@@ -96,17 +96,17 @@ void UART_DMA_Init(
  * @brief UART发送
  * 
  * @param UARTx UART编号
- * @param Data 发送缓冲区的数据指针
+ * @param pData 发送缓冲区的数据指针
  * @param Length 长度
  * @return 执行状态
  */
-uint8_t UART_Send_Data(UART_INST *UARTx, uint8_t *Data, uint16_t Length);
+uint8_t UART_Send_Data(UART_INST *UARTx, uint8_t *pData, uint16_t Length);
 
 /**
  * @brief UART接收
  * 
  * @param UARTx UART编号
- * @param Data 接收缓冲区的数据指针
+ * @param pData 接收缓冲区的数据指针
  * @param Length 长度
  * @return 执行状态
  */

@@ -138,6 +138,8 @@ typedef DMA_Regs DMA_INST;
 typedef UART_Regs UART_INST;
 /* SPI */
 typedef SPI_Regs SPI_INST;
+/* I2C */
+typedef I2C_Regs I2C_INST;
 /* GPIO */
 typedef GPIO_Regs GPIO_PORT;
 typedef uint32_t GPIO_PIN;

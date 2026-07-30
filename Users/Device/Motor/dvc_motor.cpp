@@ -122,15 +122,5 @@ void Class_Stepping_Motor_D36A::TIM_Output_PeriodElapsedCallback() {
 }
 
 void Class_Stepping_Motor_D36A::TIM_Feedback_PeriodElapsedCallback() {
-    // if (Now_Omega > 0) {
-    //     Count++;
-    // }
-    // else {
-    //     Count--;
-    // }
-
-    // // 更新当前角度
-    // Now_Angle = (float)Count / Step;
-    
     Now_Angle += Now_Omega * D_T;
 }
