@@ -21,13 +21,13 @@ const char Serialport_Rx_Variable_Assignment_List[][SERIALPORT_RX_VARIABLE_ASSIG
 
 void Info_Init(void) {
     Class_Timer::Init();
-    UART_DMA_Init(UART0, Serialport_Callback, UART_BUFFER_SIZE, DMA, DMA_CHANNEL_0, DMA_CHANNEL_1);
-    Serialport_Object.Init(UART0, 3, (const char**)Serialport_Rx_Variable_Assignment_List, Serialport_Data_Type_JUSTFLOAT, 0x00, 0x00);
+    UART_DMA_Init(UART1, Serialport_Callback, UART_BUFFER_SIZE, DMA, DMA_CHANNEL_0, DMA_CHANNEL_1);
+    Serialport_Object.Init(UART1, 3, (const char**)Serialport_Rx_Variable_Assignment_List, Serialport_Data_Type_JUSTFLOAT, 0x00, 0x00);
 }
 
 void Info_Task(void) {
     // 设置数据
-    Serialport_Object.Set_Data(1, &Visual_State.x);
+    // Serialport_Object.Set_Data(2, &Visual_State.flag, &Visual_State.x);
     // TIM定时器中断检查串口接收空闲状态，并重启DMA接收
     Serialport_Object.TIM_Read_PeriodElapsedCallback();
     // TIM定时器中断增加数据到发送缓冲区，并开启发送

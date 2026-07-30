@@ -39,7 +39,7 @@ uint8_t Motion_Trace(float speed) {
     uint8_t status = 0;// 巡迹模块八位通道值
     int16_t bias = 0;// 轨迹偏离
     for (int i = 0; i < 8; i++) {
-        if (Channels[i] == 1) {
+        if (Digital_Channels[i] == 1) {
             status |= 0x01;// 通道值转换
             bias += weight[i];// 计算轨迹偏离
         }

@@ -48,14 +48,12 @@
 | DEBUGSS | PA20 | Debug Clock |
 | DEBUGSS | PA19 | Debug Data In Out |
 | GPIO | PB22 | 板载LED |
-| UART0 TX | PB04 | 蓝牙串口 |
-| UART0 RX | PB05 | 蓝牙串口 |
+| UART1 TX | PB04 | 蓝牙串口 |
+| UART1 RX | PB05 | 蓝牙串口 |
 | UART2 TX | PA21 | 陀螺仪串口 |
 | UART2 RX | PB18 | 陀螺仪串口 |
-| GPIO | PA24 | 红外巡线 |
-| GPIO | PA25 | 红外巡线 |
-| GPIO | PA26 | 红外巡线 |
-| GPIO | PA27 | 红外巡线 |
+| I2C0 SCK | PA31 | 红外巡线 |
+| I2C1 SDA | PA28 | 红外巡线 |
 | GPIO | PB02 | 软件编码器 |
 | GPIO | PB03 | 软件编码器 |
 | GPIO | PB23 | 软件编码器 |
