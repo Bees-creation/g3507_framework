@@ -61,7 +61,7 @@ void Class_Brush_Motor_Drv8701e::TIM_Feedback_PeriodElapsedCallback() {
     Now_Angle += Now_Omega * D_T;
 }
 
-void Class_Stepping_Motor_D36A::Init(TIMER_INST *TIMx, TIMER_CHANNEL __Channel, const Enum_Motor_Control_Method &__Control_Method, GPIO_PORT *__Direction_Port, GPIO_PIN __Direction_Pin, float __D_T, uint32_t __Frequency, float __Min, float __Max, uint32_t __Scale, uint8_t __Division) {
+void Class_Stepping_Motor_D36A::Init(TIMER_INST *TIMx, TIMER_CHANNEL __Channel, const Enum_Stepping_Motor_Control_Method &__Control_Method, GPIO_PORT *__Direction_Port, GPIO_PIN __Direction_Pin, float __D_T, uint32_t __Frequency, float __Min, float __Max, uint32_t __Scale, uint8_t __Division) {
     TIM = TIMx;
     Channel = __Channel;
     Control_Method = __Control_Method;
@@ -83,9 +83,10 @@ void Class_Stepping_Motor_D36A::Init(TIMER_INST *TIMx, TIMER_CHANNEL __Channel, 
 
 void Class_Stepping_Motor_D36A::TIM_Calculate_PeriodElapsedCallback() {
     switch (Control_Method) {
-    case Motor_Control_Method_Angle:
+    case Stepping_Motor_Control_Method_Angle:
         Absolute_Target_Omega = Absolute_Target_Angle - Now_Angle;
-    case Motor_Control_Method_Omega:
+        break;
+    case Stepping_Motor_Control_Method_Omega:
         break;
     default:
         break;
@@ -106,6 +107,7 @@ void Class_Stepping_Motor_D36A::TIM_Output_PeriodElapsedCallback() {
     // 到达目标角度时停止
     if (Omega < (1.0f / Step)) {
         DL_Timer_setCaptureCompareValue(TIM, 0, Channel);
+        Now_Omega = 0.0f;
         return;
     }
     // 速度限幅
@@ -116,7 +118,7 @@ void Class_Stepping_Motor_D36A::TIM_Output_PeriodElapsedCallback() {
     DL_Timer_setLoadValue(TIM, period);
     DL_Timer_setCaptureCompareValue(TIM, period / 2, Channel);
 
-    Now_Omega = (float)Frequency / period;
+    Now_Omega = Omega;
 }
 
 void Class_Stepping_Motor_D36A::TIM_Feedback_PeriodElapsedCallback() {

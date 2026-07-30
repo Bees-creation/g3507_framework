@@ -22,6 +22,11 @@ enum Enum_Motor_Control_Algorithm {
     Motor_Control_Algorithm_PID = 0,// PID控制算法
 };
 
+enum Enum_Stepping_Motor_Control_Method {
+    Stepping_Motor_Control_Method_Angle = 0,// 角度控制
+    Stepping_Motor_Control_Method_Omega,// 速度控制
+};
+
 /**
  * @brief 电机基类
  * 
@@ -181,11 +186,6 @@ protected:
     float Filter = 0.5f;
 };
 
-enum Enum_Stepping_Motor_Control_Method {
-    Stepping_Motor_Control_Method_Position = 0,// 位置模式
-    Stepping_Motor_Control_Method_Speed,// 速度模式
-};
-
 /**
  * @brief 步进电机基类
  */
@@ -253,7 +253,7 @@ public:
 
 protected:
     // 控制方法
-    Enum_Motor_Control_Method Control_Method = Motor_Control_Method_Omega;
+    Enum_Stepping_Motor_Control_Method Control_Method = Stepping_Motor_Control_Method_Omega;
 
     // 更新周期
     float D_T;
@@ -268,22 +268,19 @@ protected:
     float Absolute_Target_Omega = 0.0f;
 
     // 时钟频率
-    uint32_t Frequency = 10000;
+    uint32_t Frequency = (1000000);
     // 步进频率
     float Out = 0.0f;
     // 步进限幅
-    float Min = 0.1f;
-    float Max = 1.0f;
+    float Min = (0.02 * PI);
+    float Max = (2 * PI);
 
     // 每圈步数
     uint32_t Scale = 200;
     // 细分倍数
-    uint8_t Division = 1;
+    uint8_t Division = 16;
     // 每rad步长
-    uint32_t Step;
-
-    // 当前步数
-    uint32_t Count;
+    float Step;
 };
 
 /**
@@ -301,8 +298,6 @@ public:
      * @param __Control_Method 控制方法
      * @param __Direction_Port 方向引脚
      * @param __Direction_Pin 方向引脚
-     * @param __Enable_Port 使能引脚
-     * @param __Enable_Pin 使能引脚
      * @param __D_T 更新周期
      * @param __Frequency 时钟频率
      * @param __Min 步进限幅
@@ -310,7 +305,7 @@ public:
      * @param __Scale 每圈步数
      * @param __Division 细分倍数
      */
-    void Init(TIMER_INST *TIMx, TIMER_CHANNEL __Channel, const Enum_Motor_Control_Method &__Control_Method, GPIO_PORT *__Direction_Port, GPIO_PIN __Direction_Pin, float __D_T, uint32_t __Frequency, float __Min, float __Max, uint32_t __Scale, uint8_t __Division);
+    void Init(TIMER_INST *TIMx, TIMER_CHANNEL __Channel, const Enum_Stepping_Motor_Control_Method &__Control_Method, GPIO_PORT *__Direction_Port, GPIO_PIN __Direction_Pin, float __D_T, uint32_t __Frequency, float __Min, float __Max, uint32_t __Scale, uint8_t __Division);
 
     /**
      * @brief 启动电机

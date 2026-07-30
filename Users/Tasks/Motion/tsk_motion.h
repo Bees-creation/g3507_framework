@@ -62,13 +62,13 @@ extern Class_Differential_Chassis chassis;
 #define FILTER (0.75f)
 
 /* 步进电机参数 */
-#define STEP_DIRECTION_PORT (GPIO_PORT_A)
-#define STEP_DIRECTION_PIN (GPIO_PIN_15)
-#define STEP_CLOCK_FREQ (10000)
-#define STEP_MIN_OMEGA (0.1f)
-#define STEP_MAX_OMEGA (1.0f)
-#define STEP_SCALE (200)
-#define STEP_DIVISION (1)
+#define STEPPING_MOTOR_DIRECTION_PORT (GPIO_PORT_A)
+#define STEPPING_MOTOR_DIRECTION_PIN (GPIO_PIN_15)
+#define STEPPING_MOTOR_CLOCK_FREQ (1000000)
+#define STEPPING_MOTOR_MIN_OMEGA (0.02f * PI)
+#define STEPPING_MOTOR_MAX_OMEGA (2.0f * PI)
+#define STEPPING_MOTOR_SCALE (200)
+#define STEPPING_MOTOR_DIVISION (16)
 
 /**
  * @brief 巡迹初始化
