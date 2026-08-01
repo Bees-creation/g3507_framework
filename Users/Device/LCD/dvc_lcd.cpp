@@ -266,10 +266,15 @@ void Class_LCD::Display_Picture(uint16_t x, uint16_t y, uint16_t width, uint16_t
     }
 }
 
-void Class_LCD::Display_Int(uint16_t x, uint16_t y, uint16_t val, uint8_t len, uint16_t fcolor, uint16_t bcolor, Enum_Font_Size size) {
+void Class_LCD::Display_Int(uint16_t x, uint16_t y, int16_t val, uint8_t len, uint16_t fcolor, uint16_t bcolor, Enum_Font_Size size) {
     uint8_t count, digit;
     uint8_t available = 0;
     uint8_t charWidth = size / 2;
+    if (val < 0) {
+        Display_Char(x, y, '-', fcolor, bcolor, size, 0);
+        val = -val;
+        x += charWidth;
+    }
     for (count = 0; count < len; count++) {
         digit = (val / (uint32_t)pow(10, len - count - 1)) % 10;
         if (available == 0 && count < (len - 1)) {
@@ -289,11 +294,25 @@ void Class_LCD::Display_Float(uint16_t x, uint16_t y, float val, uint8_t len, ui
     uint8_t count, digit;
     uint8_t available = 0;
     uint8_t charWidth = size / 2;
+    if (val < 0) {
+        Display_Char(x, y, '-', fcolor, bcolor, size, 0);
+        val = -val;
+        x += charWidth;
+    }
     uint16_t val_int = val * 100;
     for (count = 0; count < len; count++) {
         digit = (val_int / (uint32_t)pow(10, len - count - 1)) % 10;
+        if (available == 0 && count < (len - 3)) {
+            if (digit == 0) {
+                Display_Char(x + count * charWidth, y, ' ', fcolor, bcolor, size, 0);
+                continue;
+            }
+            else {
+                available = 1;
+            }
+        }
         if (count == (len - 2)) {
-            Display_Char(x + (len - 2) * charWidth, y, '.', fcolor, bcolor, size, 0);
+            Display_Char(x + count * charWidth, y, '.', fcolor, bcolor, size, 0);
             count++;
             len += 1;
         }

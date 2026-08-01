@@ -17,7 +17,7 @@
 class Class_Chassis {
 public:
     /**
-     * @brief 进行一次运动学解算，更新底盘状态
+     * @brief 进行一次运动学解算，更新电机输出
      */
     virtual void TIM_Update_PeriodElapsedCallback() = 0;
 

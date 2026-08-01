@@ -272,8 +272,8 @@ protected:
     // 步进频率
     float Out = 0.0f;
     // 步进限幅
-    float Min = (0.02 * PI);
-    float Max = (2 * PI);
+    float Min = (0.04f * PI);
+    float Max = (8.0f * PI);
 
     // 每圈步数
     uint32_t Scale = 200;

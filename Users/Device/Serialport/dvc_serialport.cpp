@@ -59,12 +59,11 @@ void Class_Serialport::Init(UART_INST *UARTx, uint8_t __Serialport_Rx_Variable_A
     UART_Receive_Data(UARTx, UART_Manage_Object->Rx_Buffer, UART_BUFFER_SIZE);
 }
 
-int8_t Class_Serialport::Get_Variable_Index() {
-    return (Variable_Index);
-}
-
-double Class_Serialport::Get_Variable_Value() {
-    return (Variable_Value);
+double Class_Serialport::Get_Variable_Value(uint8_t index) {
+    if (index >= UART_Rx_Variable_Num) {
+        return (0.0);
+    }
+    return ((double)Rx_Variable_Value[index]);
 }
 
 void Class_Serialport::Set_Data(uint8_t Number, ...) {
@@ -78,9 +77,21 @@ void Class_Serialport::Set_Data(uint8_t Number, ...) {
 }
 
 void Class_Serialport::UART_RxCpltCallback(void) {
-    int flag;
-    flag = Judge_Variable_Name();
-    Judge_Variable_Value(flag);
+    int pos = 0;
+    int8_t index;
+
+    // 循环解析缓冲区中所有键值对
+    while (pos < UART_BUFFER_SIZE && UART_Manage_Object->Rx_Buffer[pos] != '\0') {
+        index = Judge_Variable_Name(pos);
+        if (index < 0) {
+            break;
+        }
+        Rx_Variable_Value[index] = Judge_Variable_Value(pos);
+    }
+
+    // DMA短帧无法触发接收中断，需要强制重启
+    UART_Manage_Object->DMA_Rx_Manage_Object->Busy = STATUS_READY;
+    Receive();
 }
 
 void Class_Serialport::TIM_Write_PeriodElapsedCallback() {
@@ -90,72 +101,110 @@ void Class_Serialport::TIM_Write_PeriodElapsedCallback() {
 
 void Class_Serialport::TIM_Read_PeriodElapsedCallback() {
     UART_Manage_Object->Callback_Function(UART_Manage_Object->Rx_Buffer, UART_Manage_Object->Rx_Buffer_Length);
-    Receive();
 }
 
-uint8_t Class_Serialport::Judge_Variable_Name() {
+int8_t Class_Serialport::Judge_Variable_Name(int &pos) {
     // 临时存储变量名
     char tmp_variable_name[SERIALPORT_RX_VARIABLE_ASSIGNMENT_LENGTH];
-    // 等号位置标记
-    int flag;
+    int name_len;
 
-    // 记录变量名并标记等号位置
-    for (flag = 0; UART_Manage_Object->Rx_Buffer[flag] != '=' && UART_Manage_Object->Rx_Buffer[flag] != 0; flag++) {
-        tmp_variable_name[flag] = UART_Manage_Object->Rx_Buffer[flag];
+    name_len = 0;
+
+    // 跳过前导控制字符
+    while (pos < UART_BUFFER_SIZE) {
+        if (UART_Manage_Object->Rx_Buffer[pos] != '\r' && UART_Manage_Object->Rx_Buffer[pos] != '\n') {
+            break;
+        }
+        pos++;
     }
-    tmp_variable_name[flag] = 0;
+
+    // 记录变量名直到遇到 '=' 或结束符
+    while (pos < UART_BUFFER_SIZE) {
+        if (UART_Manage_Object->Rx_Buffer[pos] == '=' || UART_Manage_Object->Rx_Buffer[pos] == '\0' ||
+            UART_Manage_Object->Rx_Buffer[pos] == '\r' || UART_Manage_Object->Rx_Buffer[pos] == '\n') {
+            break;
+        }
+        if (name_len < SERIALPORT_RX_VARIABLE_ASSIGNMENT_LENGTH - 1) {
+            tmp_variable_name[name_len++] = UART_Manage_Object->Rx_Buffer[pos];
+        }
+        pos++;
+    }
+    tmp_variable_name[name_len] = '\0';
+
+    // 必须遇到 '=' 才是有效键值对
+    if (pos >= UART_BUFFER_SIZE || UART_Manage_Object->Rx_Buffer[pos] != '=') {
+        return (-1);
+    }
+    pos++;
 
     // 比对是否在列表中
     for (int i = 0; i < UART_Rx_Variable_Num; i++) {
-        // 如果在则标记变量名编号
         if (strcmp(tmp_variable_name, (char *)((int)UART_Rx_Variable_List + SERIALPORT_RX_VARIABLE_ASSIGNMENT_LENGTH * i)) == 0) {
-            Variable_Index = i;
-            return (flag + 1);
+            return (i);
         }
     }
-    // 如果变量名不在则-1
-    Variable_Index = -1;
-    return (flag + 1);
+    return (-1);
 }
 
-void Class_Serialport::Judge_Variable_Value(int flag) {
+float Class_Serialport::Judge_Variable_Value(int &pos) {
     // 小数点位置, 是否有负号
     int tmp_dot_flag, tmp_sign_coefficient, i;
+    float value;
 
     tmp_dot_flag = 0;
     tmp_sign_coefficient = 1;
-    Variable_Value = 0.0f;
+    value = 0.0f;
 
-    // 列表里没有, 没必要比对直接返回
-    if (Variable_Index == -1) {
-        return;
+    // 判断是否有正负号
+    if (pos < UART_BUFFER_SIZE && UART_Manage_Object->Rx_Buffer[pos] == '+') {
+        pos++;
     }
-
-    // 判断是否有负号
-    if (UART_Manage_Object->Rx_Buffer[flag] == '-') {
+    else if (pos < UART_BUFFER_SIZE && UART_Manage_Object->Rx_Buffer[pos] == '-') {
         tmp_sign_coefficient = -1;
-        flag++;
+        pos++;
     }
 
-    // 计算值并注意小数点是否存在及其位置
-    for (i = flag; UART_Manage_Object->Rx_Buffer[i] != '#' && UART_Manage_Object->Rx_Buffer[i] != 0; i++) {
+    // 计算值直到遇到 '#' 或结束符
+    for (i = pos; i < UART_BUFFER_SIZE; i++) {
+        if (UART_Manage_Object->Rx_Buffer[i] == '#' || UART_Manage_Object->Rx_Buffer[i] == '\0' ||
+            UART_Manage_Object->Rx_Buffer[i] == '\r' || UART_Manage_Object->Rx_Buffer[i] == '\n') {
+            break;
+        }
         if (UART_Manage_Object->Rx_Buffer[i] == '.') {
             tmp_dot_flag = i;
         }
         else {
-            Variable_Value = Variable_Value * 10.0f + (UART_Manage_Object->Rx_Buffer[i] - '0');
+            value = value * 10.0f + (UART_Manage_Object->Rx_Buffer[i] - '0');
         }
     }
 
     // 如果有小数点则考虑
     if (tmp_dot_flag != 0) {
-        Variable_Value /= pow(10.0f, i - tmp_dot_flag - 1.0f);
+        value /= pow(10.0f, i - tmp_dot_flag - 1.0f);
     }
 
-    Variable_Value *= tmp_sign_coefficient;
+    value *= tmp_sign_coefficient;
+
+    // 跳过 '#' 和尾随控制字符，定位到下一个键值对开头
+    pos = i;
+    while (pos < UART_BUFFER_SIZE) {
+        if (UART_Manage_Object->Rx_Buffer[pos] != '#' && UART_Manage_Object->Rx_Buffer[pos] != '\r' &&
+            UART_Manage_Object->Rx_Buffer[pos] != '\n') {
+            break;
+        }
+        pos++;
+    }
+
+    return (value);
 }
 
 void Class_Serialport::Output() {
+    // 不发送空数据
+    if (!Data_Number) {
+        Frame_Size = 0;
+        return;
+    }
+
     for (int i = 0; i < UART_BUFFER_SIZE; i++) {
         UART_Manage_Object->Tx_Buffer[i] = 0;
     }

@@ -72,7 +72,7 @@ void Class_Menu::Display_Menu_Value(uint8_t index, float val, uint16_t len, uint
     LCD.Display_Float(Menu_Item_Bias, Bar_Top_Height + Menu_Item_Font * index, val, len, fcolor, bcolor, Menu_Item_Font);
 }
 
-void Class_Menu::Display_Menu_Value(uint8_t index, uint16_t val, uint16_t len, uint16_t fcolor, uint16_t bcolor) {
+void Class_Menu::Display_Menu_Value(uint8_t index, int16_t val, uint16_t len, uint16_t fcolor, uint16_t bcolor) {
     LCD.Display_Int(Menu_Item_Bias, Bar_Top_Height + Menu_Item_Font * index, val, len, fcolor, bcolor, Menu_Item_Font);
 }
 

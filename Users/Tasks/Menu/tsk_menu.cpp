@@ -92,6 +92,8 @@ void Image_Transmission(void) {
 void Line_Tracking(void) {
     // 巡迹行驶
     uint8_t flag = STATUS_BUSY;
+    // 任务完成标记
+    static uint8_t finished = STATUS_BUSY;
     static Enum_Menu_Item_State Void_Task_State = Menu_Item_State_IDLE;
     switch (Void_Task_State) {
     case Menu_Item_State_IDLE:
@@ -102,6 +104,95 @@ void Line_Tracking(void) {
         Class_Timer::Clear();
         Rotation_Init();
         Motion_Init();
+        Void_Task_State = Menu_Item_State_RUNNING;
+        break;
+    case Menu_Item_State_RUNNING:
+        // 更新计时器
+        if (finished == STATUS_BUSY) {
+            Class_Timer::Update();
+            Rotation_Update();
+            if ((Class_Timer::Get() - time) >= 50) {
+                Menu_Object.Display_Menu_Value(1, (Class_Timer::Get() / 1000.0f));
+                time = Class_Timer::Get();
+            }
+            flag = Motion_Trace(500);
+        }
+        if (flag == STATUS_DONE && finished != STATUS_DONE) {
+            finished = STATUS_DONE;
+        }
+        if (Menu_Object.Get_Trigger() == Menu_Trigger_OK) {
+            Void_Task_State = Menu_Item_State_STOPPING;
+            Menu_Object.Clear_Trigger();
+        }
+        break;
+    case Menu_Item_State_STOPPING:
+        // 重置任务完成标记
+        finished = STATUS_BUSY;
+        // 重置定时器
+        Class_Timer::Clear();
+        Rotation_Clear();
+        Motion_Stop();
+        Menu_Object.Hide_Menu_Item(0);
+        Menu_Object.Hide_Menu_Item(1);
+        Menu_Object.Exit_Menu_Item();
+        Void_Task_State = Menu_Item_State_IDLE;
+        break;
+    }
+}
+
+void Ball_Tracking(void) {
+    // 小球滚动
+    uint8_t flag = STATUS_BUSY;
+    static Enum_Menu_Item_State Void_Task_State = Menu_Item_State_IDLE;
+    switch (Void_Task_State) {
+    case Menu_Item_State_IDLE:
+        Menu_Object.Display_Menu_Item(0, (const uint8_t*)"Seconds:");
+        Void_Task_State = Menu_Item_State_CONFIG;
+    case Menu_Item_State_CONFIG:
+        // 重置定时器
+        Class_Timer::Clear();
+        Visual_Set_Target(0);
+        Void_Task_State = Menu_Item_State_RUNNING;
+        break;
+    case Menu_Item_State_RUNNING:
+        // 更新计时器
+        Class_Timer::Update();
+        if ((Class_Timer::Get() - time) >= 50) {
+            Menu_Object.Display_Menu_Value(1, (Class_Timer::Get() / 1000.0f));
+            time = Class_Timer::Get();
+        }
+        flag = Visual_Trace();
+        if (Menu_Object.Get_Trigger() == Menu_Trigger_OK || flag == STATUS_DONE) {
+            Void_Task_State = Menu_Item_State_STOPPING;
+            Menu_Object.Clear_Trigger();
+        }
+        break;
+    case Menu_Item_State_STOPPING:
+        // 重置定时器
+        Class_Timer::Clear();
+        Visual_Set_Target(0);
+        Menu_Object.Hide_Menu_Item(0);
+        Menu_Object.Hide_Menu_Item(1);
+        Menu_Object.Exit_Menu_Item();
+        Void_Task_State = Menu_Item_State_IDLE;
+        break;
+    }
+}
+
+void Running_Balance(void) {
+    // 同步巡迹行驶和平衡控制
+    uint8_t flag = STATUS_BUSY;
+    static Enum_Menu_Item_State Void_Task_State = Menu_Item_State_IDLE;
+    switch (Void_Task_State) {
+    case Menu_Item_State_IDLE:
+        Menu_Object.Display_Menu_Item(0, (const uint8_t*)"Seconds:");
+        Void_Task_State = Menu_Item_State_CONFIG;
+    case Menu_Item_State_CONFIG:
+        // 重置定时器
+        Class_Timer::Clear();
+        Rotation_Init();
+        Motion_Init();
+        Visual_Set_Target(0);
         Void_Task_State = Menu_Item_State_RUNNING;
         break;
     case Menu_Item_State_RUNNING:
@@ -123,6 +214,7 @@ void Line_Tracking(void) {
         Class_Timer::Clear();
         Rotation_Clear();
         Motion_Stop();
+        Visual_Set_Target(0);
         Menu_Object.Hide_Menu_Item(0);
         Menu_Object.Hide_Menu_Item(1);
         Menu_Object.Exit_Menu_Item();
@@ -131,15 +223,10 @@ void Line_Tracking(void) {
     }
 }
 
-void Ball_Tracking(void) {
-    // 小球滚动
-    _Void_T();
-}
-
 void Config_Kp(void) {
-    float& Kpl = chassis.Left_Motor.Omega_Loop.Get_K_P();
-    float& Kpr = chassis.Right_Motor.Omega_Loop.Get_K_P();
-    _Config_T((uint8_t*)"Kp", Kpl, 50.0f, 150.0f, 10.0f);
+    float& Kpl = Chassis.Left_Motor.Omega_Loop.Get_K_P();
+    float& Kpr = Chassis.Right_Motor.Omega_Loop.Get_K_P();
+    _Config_T((uint8_t*)"Kp", Kpl, 80.0f, 160.0f, 10.0f);
     Kpr = Kpl;
 }
 
@@ -196,7 +283,7 @@ void About(void) {
 /** 在此处定义任务函数 --  end  -- */
 
 /* 任务状态 */
-void (*Task_List[])(void) = { Image_Transmission, Line_Tracking, Ball_Tracking, Config_Kp, About, };
+void (*Task_List[])(void) = { Image_Transmission, Line_Tracking, Ball_Tracking, Running_Balance, Config_Kp, About, };
 constexpr uint8_t TASK_NUMS = (sizeoflist(Task_List));
 uint8_t Task_Status[TASK_NUMS];
 
@@ -216,12 +303,13 @@ Struct_Menu_Item Runs_Item_List[] = {
     { (const uint8_t*)"Image Transmission", &Task_Status[0], NULL },
     { (const uint8_t*)"Line Tracking", &Task_Status[1], NULL },
     { (const uint8_t*)"Ball Tracking", &Task_Status[2], NULL },
+    { (const uint8_t*)"Running Balance", &Task_Status[3], NULL },
 };
 
 Struct_Menu_Item Options_Item_List[] = {
     { (const uint8_t*)"..", NULL, &Home },
-    { (const uint8_t*)"Config Kp", &Task_Status[3], NULL },
-    { (const uint8_t*)"About", &Task_Status[4], NULL },
+    { (const uint8_t*)"Config Kp", &Task_Status[4], NULL },
+    { (const uint8_t*)"About", &Task_Status[5], NULL },
 };
 
 /* 菜单 = { 菜单项列表, 菜单项列表大小, 上级菜单指针 } */

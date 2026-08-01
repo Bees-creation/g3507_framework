@@ -118,7 +118,8 @@ void Class_Stepping_Motor_D36A::TIM_Output_PeriodElapsedCallback() {
     DL_Timer_setLoadValue(TIM, period);
     DL_Timer_setCaptureCompareValue(TIM, period / 2, Channel);
 
-    Now_Omega = Omega;
+    // 保留方向符号，使 Now_Angle 可以增减
+    Now_Omega = (Absolute_Target_Omega >= 0.0f) ? Omega : -Omega;
 }
 
 void Class_Stepping_Motor_D36A::TIM_Feedback_PeriodElapsedCallback() {

@@ -138,7 +138,7 @@ public:
     /**
      * @brief 显示条目，整数
      */
-    void Display_Menu_Value(uint8_t index, uint16_t val, uint16_t len = 5, uint16_t fcolor = text_color, uint16_t bcolor = foreground_color);
+    void Display_Menu_Value(uint8_t index, int16_t val, uint16_t len = 5, uint16_t fcolor = text_color, uint16_t bcolor = foreground_color);
 
     /**
      * @brief 隐藏条目

@@ -15,8 +15,8 @@
 Class_Serialport Serialport_Object;
 
 const char Serialport_Rx_Variable_Assignment_List[][SERIALPORT_RX_VARIABLE_ASSIGNMENT_LENGTH] = {
-    "flag",
     "x",
+    "v",
 };
 
 void Info_Init(void) {
@@ -27,7 +27,7 @@ void Info_Init(void) {
 
 void Info_Task(void) {
     // 设置数据
-    // Serialport_Object.Set_Data(2, &Visual_State.flag, &Visual_State.x);
+    // Serialport_Object.Set_Data(2, &Visual_State.x, &Visual_State.v);
     // TIM定时器中断检查串口接收空闲状态，并重启DMA接收
     Serialport_Object.TIM_Read_PeriodElapsedCallback();
     // TIM定时器中断增加数据到发送缓冲区，并开启发送
@@ -37,14 +37,6 @@ void Info_Task(void) {
 void Serialport_Callback(uint8_t *Buffer, uint16_t Length) {
     Serialport_Object.UART_RxCpltCallback();
 
-    switch (Serialport_Object.Get_Variable_Index()) {
-    case 0:
-        Visual_State.flag = Serialport_Object.Get_Variable_Value();
-        break;
-    case 1:
-        Visual_State.x = Serialport_Object.Get_Variable_Value();
-        break;
-    default:
-        break;
-    }
+    Visual_State.x = Serialport_Object.Get_Variable_Value(0);
+    Visual_State.v = Serialport_Object.Get_Variable_Value(1);
 }

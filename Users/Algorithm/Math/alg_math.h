@@ -167,11 +167,11 @@ public:
     Angle_t(float angle) : _value(Normalize(angle)) {}
 
     /**
-     * @brief 隐式类型转换，可以将类当作 float 变量传参
+     * @brief 显式类型转换，可以将类当作 float 变量传参
      * 
      * @retval 绝对角度，范围 [-180°, 180°)
      */
-    operator float() const { return _value; }
+    explicit operator float() const { return _value; }
 
     /**
      * @brief 赋值运算符，用于从 float 变量赋值
@@ -218,11 +218,11 @@ public:
     Rotation_t(float val) : _value(val) {}
 
     /**
-     * @brief 隐式类型转换，可以将类当作 float 变量传参
+     * @brief 显式类型转换，可以将类当作 float 变量传参
      * 
      * @retval 相对角度，范围 (-Inf, Inf)
      */
-    operator float() const { return _value; }
+    explicit operator float() const { return _value; }
 
     /**
      * @brief 赋值运算符，用于从 float 变量赋值

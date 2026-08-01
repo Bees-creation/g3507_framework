@@ -89,7 +89,7 @@ public:
 
     void Display_Picture(uint16_t x, uint16_t y, uint16_t width, uint16_t height, const uint8_t pic[]);
 
-    void Display_Int(uint16_t x, uint16_t y, uint16_t val, uint8_t len, uint16_t fcolor, uint16_t bcolor, Enum_Font_Size size);
+    void Display_Int(uint16_t x, uint16_t y, int16_t val, uint8_t len, uint16_t fcolor, uint16_t bcolor, Enum_Font_Size size);
 
     void Display_Float(uint16_t x, uint16_t y, float val, uint8_t len, uint16_t fcolor, uint16_t bcolor, Enum_Font_Size size);
     

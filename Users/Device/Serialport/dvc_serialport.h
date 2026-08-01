@@ -55,18 +55,12 @@ public:
     void Init(UART_INST *UARTx, uint8_t __Serialport_Rx_Variable_Assignment_Num = 0, const char **__Serialport_Rx_Variable_Assignment_List = NULL, Enum_Serialport_Data_Type __Serialport_Tx_Data_Type = Serialport_Data_Type_FLOAT, uint8_t __Frame_Header = 0x00, uint8_t __Frame_Trailer = 0x00);
 
     /**
-     * @brief 获取当前接收的指令在指令字典中的编号
+     * @brief 获取接收指令字典中指定编号的值
      *
-     * @retval 当前接收的指令在指令字典中的编号
+     * @param index 指令在字典中的编号
+     * @retval 该编号对应的最新解析值，越界返回0
      */
-    int8_t Get_Variable_Index();
-
-    /**
-     * @brief 获取当前接收的指令在指令字典中的值
-     *
-     * @retval 当前接收的指令在指令字典中的值
-     */
-    double Get_Variable_Value();
+    double Get_Variable_Value(uint8_t index);
 
     /**
      * @brief 添加被发送的数据到成员变量Data[]
@@ -113,10 +107,8 @@ protected:
     const void *Data[12];
     // 当前发送的数据长度，等价于新数据偏移量
     uint8_t Data_Number = 0;
-    // 当前接收的指令在指令字典中的编号
-    int8_t Variable_Index = 0;
-    // 当前接收的指令在指令字典中的值
-    float Variable_Value = 0.0f;
+    // 接收指令字典对应的值数组
+    float Rx_Variable_Value[12];
     // 发送数组字节长度
     uint16_t Frame_Size;
 
@@ -125,14 +117,18 @@ protected:
     /**
      * @brief 判断指令变量名
      *
-     * @retval 指令数值位置的指针，也就是"variable=value#"中v的坐标
+     * @param pos 缓冲区解析位置，调用后更新到 '=' 之后
+     * @retval 指令在字典中的编号，-1表示未找到
      */
-    uint8_t Judge_Variable_Name();
+    int8_t Judge_Variable_Name(int &pos);
 
     /**
      * @brief 判断指令变量数值
+     *
+     * @param pos 缓冲区解析位置，调用后更新到 '#' 之后
+     * @retval 解析出的浮点数值
      */
-    void Judge_Variable_Value(int flag);
+    float Judge_Variable_Value(int &pos);
 
     /**
      * @brief 串口绘图数据输出到UART发送缓冲区

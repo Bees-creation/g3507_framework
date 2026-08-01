@@ -22,11 +22,11 @@ Rotation_t Target_Rotation;
 
 void Rotation_Init(void) {
     Previous_Yaw = Yaw;
-    Target_Rotation = Yaw + 360.0f;
+    Target_Rotation = (float)Yaw + (-360.0f);
 }
 
 void Rotation_Update(void) {
-    Current_Rotation = (Current_Rotation + (Yaw - Previous_Yaw));
+    Current_Rotation = ((float)Current_Rotation + (float)(Yaw - Previous_Yaw));
     Previous_Yaw = Yaw;
 }
 
@@ -49,11 +49,9 @@ void Sensor_Task(void) {
     IRS.TIM_Feedback_PeriodElapsedCallback();
     for (int i = 0; i < 8; i++) {
         Digital_Channels[i] = IRS.Get_Digital_Channels()[i];
-        Digital_Channels_f[i] = Digital_Channels[i];
     }
     for (int i = 0; i < 8; i++) {
         Analog_Channels[i] = IRS.Get_Analog_Channels()[i];
-        Analog_Channels_f[i] = Analog_Channels[i];
     }
 
     // IMU模块任务
